@@ -1,0 +1,33 @@
+========
+Glossary
+========
+--------------
+Type of motion
+--------------
+
+ - tap : tapping
+ - prosup : pronation and supination
+ - tre : tremor
+
+---------
+Arguments
+---------
+
+ - lvlX : X stage of Parkinson's, e.g. lvl2 for Stage 2 of Parkinson's
+ - tryX : trial X
+
+ --------
+ Advanced
+ --------
+ - Xg : the accelerometer uses a resolution of X g instead of the default value
+ - Xdeg : the gyroscope uses a resolution of X degrees per second instead of the default value
+
+==========
+Convention
+==========
+
+A-arg1-arg2...
+
+ - A should be the naming convention, e.g. 'tap', 'prosup', as per the 'Glossary'.
+ - arg1, arg2, etc. 
+
