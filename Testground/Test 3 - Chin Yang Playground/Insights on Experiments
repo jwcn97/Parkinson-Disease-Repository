@@ -1,0 +1,37 @@
+Key Points to date (18/2/2020):
+
+
+acc-gyro:
+    x new
+    y new
+    z new
+    
+    ftap
+    hmove
+    prosup
+    ttap
+    leag
+    tota
+    tugt
+
+4test:
+    lin acc-grav
+    
+    
+    lin acc-euler
+    
+    
+    lin acc-qua
+    
+    
+    lin acc-euler-pr
+    
+    
+    lin acc-qua-pr
+    
+    
+    acc-gyro
+    
+    
+    
+    
