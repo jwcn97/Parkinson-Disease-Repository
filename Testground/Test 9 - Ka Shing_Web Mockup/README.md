@@ -6,11 +6,11 @@ The web mockup serves to display Parkinson's data. The aim is to build a web-bas
 1. On the webpage hosting the GUI, the researcher logs in with their credentials. 
 1. The researcher uploads a pair of CSV files collected from the Metabase application on iOS/Android.
 1. The GUI sends the CSV files to the server, which returns a dataframe of statistics.
- 1. The server runs a series of functions (as determined by the developers) on the given CSV files. 
- 1. Each function results in a single, or a group of, statistics. Each statistic will be added to a row in a dataframe.
- 1. This dataframe is sent back to the GUI.
- 1. At the same time, the CSV files are saved in a cloud folder online. 
- 1. \[Optional]: The statistic dataframe can be saved in a cloud folder online. This is optional as the addition or removal of statistics in the future may likely necessitate re-running the series of functions (rather than just the set of additional functions) to ensure all statistics are consistent across CSV files. 
+    1. The server runs a series of functions (as determined by the developers) on the given CSV files. 
+    1. Each function results in a single, or a group of, statistics. Each statistic will be added to a row in a dataframe.
+    1. This dataframe is sent back to the GUI.
+    1. At the same time, the CSV files are saved in a cloud folder online. 
+    1. \[Optional]: The statistic dataframe can be saved in a cloud folder online. This is optional as the addition or removal of statistics in the future may likely necessitate re-running the series of functions (rather than just the set of additional functions) to ensure all statistics are consistent across CSV files. x
 1. The researcher can view the statistics in the GUI.
 
 ## To-Do
