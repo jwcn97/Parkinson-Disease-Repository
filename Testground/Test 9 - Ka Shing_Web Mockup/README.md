@@ -13,23 +13,26 @@ The web mockup serves to display Parkinson's data. The aim is to build a web-bas
     1. \[Optional]: The statistic dataframe can be saved in a cloud folder online. This is optional as the addition or removal of statistics in the future may likely necessitate re-running the series of functions (rather than just the set of additional functions) to ensure all statistics are consistent across CSV files. x
 1. The researcher can view the statistics in the GUI.
 
+## Problems
+<b><i>Currently, there seems to be a CORS problem with the communication between Python Flask and the Angular webserver hosted. The same issue occurred when using Java Springboot with Angular back in the summer but a server-side (Java) fix seemed to remedy the issue. As of now, I can't find a similar solution for Flask yet. </i></b>
+
 ## To-Do
- - [ ] Offline server
+ - [ ] Offline server:
      The purpose of this offline server is to test out communication between server and GUI APIs.
-     - [ ] Laptop-hosted Python script with Flask 
-     - [ ] Laptop-hosted Angular 7 webpage
-     - [ ] Successful communication between server and GUI
- - [ ] Online server
+     - [x] Laptop-hosted Python script with Flask 
+     - [x] Laptop-hosted Angular 7 webpage
+     - [] Successful communication between server and GUI
+ - [ ] Online server:
      Hosting the above server and GUI online.
      - [ ] Successful communication between server and GUI
- - [ ] Implementation of actual functions
+ - [ ] Implementation of actual functions:
      Implementation of actual functions rather than dummy ones. 
      - [ ] Server API equipped with a function returning a single dataframe. Does not need to contain all information as the intention is to make it scalable and generalisable to addition of future statistics.
      - [ ] GUI capable of uploading a CSV file and displaying a HTML table. 
      - [ ] Successful saving of CSV files on server. 
      - [ ] Ability to manually delete CSV files on server. \[Optional: Ability to 'exclude' files rather than deleting them outright using a property in the file's metadata. Overwriting files overwrites the exclusion metadata, causing them to be included by defaeult. ] 
      - [ ] Somehow, we need to let the researchers input the severity of the file. One method is by enforcing the naming conventions already used as they will name the files after they finish the test. Otherwise, a team meeting may be required to overcome the recording of the severity level. We would, preferably, wish to avoid a one-by-one inputting of the severity level as that essentially reintroduces the manual task of an extra click or two/extra typing per pair of CSV files. 
- - [ ] Implementation of multiple users
+ - [ ] Implementation of multiple users:
      Ensure the server can be used by multiple users at the same time. 
      - [ ] Asynchronous execution of server API. 
      - [ ] Hosting of multiple sessions. Potentially require investigation into the number of writes called to Firebase per upload to extrapolate the number of uploads permissible (remaining) for the day. 
