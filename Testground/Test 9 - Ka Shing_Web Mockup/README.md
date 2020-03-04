@@ -21,7 +21,7 @@ The web mockup serves to display Parkinson's data. The aim is to build a web-bas
      The purpose of this offline server is to test out communication between server and GUI APIs.
      - [x] Laptop-hosted Python script with Flask 
      - [x] Laptop-hosted Angular 7 webpage
-     - [] Successful communication between server and GUI
+     - [ ] Successful communication between server and GUI
  - [ ] Online server:
      Hosting the above server and GUI online.
      - [ ] Successful communication between server and GUI
