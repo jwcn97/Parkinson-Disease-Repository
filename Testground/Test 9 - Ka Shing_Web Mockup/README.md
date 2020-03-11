@@ -19,8 +19,8 @@ The web mockup serves to display Parkinson's data. The aim is to build a web-bas
 ## To-Do
  - [ ] Online server:
      Hosting the server and GUI online.
-     - [ ] Hosting the Python script with Flask.
-     - [ ] Hosting the Angular 7 webpage.
+     - [ ] Hosting a random Python script with Flask.
+     - [ ] Hosting a random Angular 7 webpage.
      - [ ] Successful communication between server and GUI
  - [ ] Implementation of actual functions:
      Implementation of actual functions rather than dummy ones. 
