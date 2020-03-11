@@ -17,13 +17,10 @@ The web mockup serves to display Parkinson's data. The aim is to build a web-bas
 <b><i>Currently, there seems to be a CORS problem with the communication between Python Flask and the Angular webserver hosted. The same issue occurred when using Java Springboot with Angular back in the summer but a server-side (Java) fix seemed to remedy the issue. As of now, I can't find a similar solution for Flask yet. </i></b>
 
 ## To-Do
- - [ ] Offline server:
-     The purpose of this offline server is to test out communication between server and GUI APIs.
-     - [x] Laptop-hosted Python script with Flask 
-     - [x] Laptop-hosted Angular 7 webpage
-     - [ ] Successful communication between server and GUI
  - [ ] Online server:
-     Hosting the above server and GUI online.
+     Hosting the server and GUI online.
+     - [ ] Hosting the Python script with Flask.
+     - [ ] Hosting the Angular 7 webpage.
      - [ ] Successful communication between server and GUI
  - [ ] Implementation of actual functions:
      Implementation of actual functions rather than dummy ones. 
