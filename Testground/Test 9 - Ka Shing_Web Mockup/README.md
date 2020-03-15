@@ -16,12 +16,16 @@ The web mockup serves to display Parkinson's data. The aim is to build a web-bas
 ## Problems
 <b><i>Currently, there seems to be a CORS problem with the communication between Python Flask and the Angular webserver hosted. The same issue occurred when using Java Springboot with Angular back in the summer but a server-side (Java) fix seemed to remedy the issue. As of now, I can't find a similar solution for Flask yet. </i></b>
 
+## Resources
+ - https://www.youtube.com/watch?v=6WruncSoCdI
+
 ## To-Do
+ - [x] Offline server: 
+     Hosting the server and GUI on a local server. 
+     - [x] Successful frontend and backend communication. 
  - [ ] Online server:
      Hosting the server and GUI online.
      - [ ] Hosting a random Python script with Flask.
-     - [ ] Hosting a random Angular 7 webpage.
-     - [ ] Successful communication between server and GUI
  - [ ] Implementation of actual functions:
      Implementation of actual functions rather than dummy ones. 
      - [ ] Server API equipped with a function returning a single dataframe. Does not need to contain all information as the intention is to make it scalable and generalisable to addition of future statistics.
