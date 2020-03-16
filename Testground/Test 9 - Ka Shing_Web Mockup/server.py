@@ -54,10 +54,7 @@ def home_page():
 			# print(pd.read_csv(request.files.get('files')))
 
 			# We only extract the files that fit the given extensions
-			filtered_files = []
-
-			for extension in app.config["FILE_EXTENSIONS"]:
-				filtered_files.extend(list(filter(lambda x: x.filename.endswith(extension), raw_files)))
+			filtered_files = filter_file_extensions(raw_files, app.config["FILE_EXTENSIONS"])
 
 			# We want to group the files based on their names
 			# This should happen before saving it
@@ -109,6 +106,7 @@ def home_page():
 				else:
 					# None of the files representing the session have been added, so add a new JSON
 					jsons.append({
+						'filename': filename,
 						'name': complete_filename,
 						'saved_name': sensor_filename,
 						'metadata': sensor_metadata,
@@ -118,8 +116,8 @@ def home_page():
 
 			# Debugging
 			# Ensure the collection worked
-			# for jx, j in enumerate(jsons):
-			# 	print(jx, j)
+			for jx, j in enumerate(jsons):
+				print(jx, j)
 				
 			# We filter only those with complete accelerometer and gyroscope fields
 			# In the future, other values may be used and this may have to be changed
@@ -139,7 +137,9 @@ def home_page():
 			# [TODO] We will want to give them a notice that multiple files were uploaded, and thus only the last one is being displayed. 
 			j = None 
 			
-			for j in filtered_jsons: 
+			for j in filtered_jsons:
+				print(j)
+
 				# [TODO] Do not save if it will overwrite
 				for file in (j['accelerometer'], j['gyroscope']):
 					# Repeat it for the accelerometer and gyroscope files
@@ -174,6 +174,89 @@ def home_page():
 	return build_page(dataframe)
 
 
+def filter_file_extensions(files, extensions):
+	"""
+	Filters files based on their extensions 
+
+	Parameters
+	----------
+	files (FileStorage[])
+		The files to be filtered
+	extensions (str[])
+		An array of permissible extensions
+
+	Returns
+	-------
+	filtered_files (FileStorage[])
+		The files that end with the given extensions
+	"""
+	filtered_files = []
+
+	for extension in app.config["FILE_EXTENSIONS"]:
+		filtered_files.extend(list(filter(lambda x: x.filename.endswith(extension), raw_files)))
+
+	return filtered_files
+
+
+def group_files(): # [LAST]
+	# We want to group the files based on their names
+	# This should happen before saving it
+	# The files, grouped based on their names, should be accessible through a JSON array
+	# [TODO] Any file that doesn't come in an accelerometer/gyroscope pair should evoke an error
+	# Any 'exceptional case' will be handled by future releases
+	jsons = []
+	for file in filtered_files:
+		# Get the filename
+		filename = file.filename 
+
+		# Extract the regex
+		regex = re.search(app.config["FILE_REGEX"], filename)
+
+		# Ensure that it is not 'None'
+		# [TODO] What if it is None?
+		assert regex is not None
+		
+		# Collect regex groups
+		sensor_filename = regex.group(1)
+		sensor_metadata = regex.group(2)
+		sensor_datatype = regex.group(3)
+		sensor_version = regex.group(4)
+		sensor_extension = regex.group(5)
+
+		# Set sensor datatype to lowercase
+		sensor_datatype = sensor_datatype.lower()
+
+		# Generate extra variables
+		complete_filename = sensor_filename + '_' + sensor_metadata
+
+		# Collect existing filenames to be compared
+		existing_filenames = [t['name'] for t in jsons]
+
+		# Check if the filename already exists
+		if complete_filename in existing_filenames:
+			# Loop through each JSON to find the match
+			for jx, j in enumerate(jsons):
+				if j['name'] == complete_filename:		
+					# Assert that the sensor_datatype doesn't already exist
+					# [TODO] Something if it already exists because, how could it?
+
+					assert sensor_datatype not in j.keys()
+
+					jsons[jx][sensor_datatype] = file
+
+					break 
+						
+		else:
+			# None of the files representing the session have been added, so add a new JSON
+			jsons.append({
+				'filename': filename,
+				'name': complete_filename,
+				'saved_name': sensor_filename,
+				'metadata': sensor_metadata,
+				sensor_datatype: file,
+				'version': sensor_version
+			})
+
 def build_page(dataframe):
 	"""
 	The function to build the HTML for the home page. 
@@ -203,18 +286,21 @@ def get_metrics(json):
 	----------
 	json ({}):
 		Fields:
-			name: 
-			saved_name:
-			metadata:
-			accelerometer:
-			gyroscope:
-			version: 
+			filename: str
+			name: str
+			saved_name: str
+			metadata: str 
+			accelerometer: FileStorage
+			gyroscope: FileStorage
+			version: str
 	"""
 	# Parse into dataframe
 	json['accel_df'] = pd.read_csv(json['accelerometer'])
 	json['gyro_df'] = pd.read_csv(json['gyroscope'])
 
 	True 
+
+	print(copy(json))
 
 	return copy(json)['accel_df']
 
@@ -226,6 +312,7 @@ def copy(json):
 	new_json = {}
 
 	# Strings are immediately copied upon assignment
+	new_json['filename'] = json['filename']
 	new_json['name'] = json['name']
 	new_json['saved_name'] = json['saved_name']
 	new_json['metadata'] = json['metadata']
