@@ -1,0 +1,5 @@
+# Data Analysis
+Unofficial data analysis on the side about potential things to look at for the data we have.
+
+# To-Do
+- [ ] We can try looking at getting the mean of means and the standard deviation of means to begin work on the confidence of a value falling in between a particular value. Zooming out, we will have X statistic of Y statistic, where Y statistic is a metric used to characterise the sensor data, while X statistic is a metric used to characterise the Y statistics. Metrics from new data is then compared with our collection of X statistics to generate a confidence level of what level the patient falls in. We can attempt to do this with the trials available from Patients 1 and 2, using all data from Patient 1 and 2/3 data from Patient 2 to check its success. We can alternate the single data excluded from Patient 2 to view the success across a broader variation of datasets. 
