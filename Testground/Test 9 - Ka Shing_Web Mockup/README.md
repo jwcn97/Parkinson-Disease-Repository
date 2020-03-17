@@ -21,6 +21,7 @@ The web mockup serves to display Parkinson's data. The aim is to build a web-bas
  - https://www.youtube.com/watch?v=6WruncSoCdI
 
 ## To-Do
+### Main Branch
  - [x] Offline server: 
      Hosting the server and GUI on a local server. 
      - [x] Successful frontend and backend communication. 
@@ -39,3 +40,9 @@ The web mockup serves to display Parkinson's data. The aim is to build a web-bas
      - [ ] Asynchronous execution of server API. 
      - [ ] Hosting of multiple sessions. Potentially require investigation into the number of writes called to Firebase per upload to extrapolate the number of uploads permissible (remaining) for the day. 
      - [ ] Ability to upload an entire set of files (as the researchers may be uninterested in uploading a single file one by one if the dataframe itself isn't going to give an objective understanding of the patient's condition yet).
+     
+### Branch 1: Strict Questionnaire
+ - [ ] Generate a table of questionnaires for each uploaded file. Some sections should automatically be filled based on the required nomenclature. However, <b>all</b> fields should be filled up before they can be sent. 
+ 
+### Branch 1-1: Lenient Questionnaire
+ - [ ] Instead of asserting that all fields must be filled up before they can be sent, the fields that pass regulation can be sent; those that do not remain. 
