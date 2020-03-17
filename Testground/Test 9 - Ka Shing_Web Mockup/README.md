@@ -14,7 +14,8 @@ The web mockup serves to display Parkinson's data. The aim is to build a web-bas
 1. The researcher can view the statistics in the GUI.
 
 ## Problems
-<b><i>Currently, there seems to be a CORS problem with the communication between Python Flask and the Angular webserver hosted. The same issue occurred when using Java Springboot with Angular back in the summer but a server-side (Java) fix seemed to remedy the issue. As of now, I can't find a similar solution for Flask yet. </i></b>
+1. Currently, there is a question of which online storage will be appropriate to use for the storage of sensitive medical data. 
+1. There is also the question of whether AWS services remain free after a year or if they require payment following that date. 
 
 ## Resources
  - https://www.youtube.com/watch?v=6WruncSoCdI
