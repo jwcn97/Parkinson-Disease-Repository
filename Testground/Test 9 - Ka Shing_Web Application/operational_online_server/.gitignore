@@ -1,0 +1,9 @@
+# Virtual environment
+# Required for Amazon
+env/
+
+# Testing folder
+files/
+
+# Don't include zip files
+*.zip
