@@ -18,25 +18,30 @@ The web application serves to display Parkinson's data. The aim is build a web-b
 
 ## Problems
 1. Currently, there is a question of which online storage will be appropriate to use for the storage of sensitive medical data. Read [here](https://aws.amazon.com/blogs/architecture/store-protect-optimize-your-healthcare-data-with-aws/) for better understanding of whether it's appropriate. 
+1. Currently, our access key is from the Root account. According to AWS best practices, it is best to use the root account to generate an IAM user; we then use the IAM user's credentials for the script. 
 
 ## Resources
  - https://www.youtube.com/watch?v=6WruncSoCdI
 
 ## To-Do
 ### Main Branch
- - [x] <b>operational_offline_server</b> - Offline server: 
+ - [x] <b>offline_server</b> - Offline server: 
      Hosting the server and GUI on a local server. 
      - [x] Successful frontend and backend communication. 
- - [ ] <b>operational_online_server</b> - Online server:
+ - [x] <b>aws_bucket_call</b> - AWS API Test:
+     Testing if a Python script can GET from and POST to an S3 bucket; if only POST works, we can proceed
+     - [x] GET successful
+     - [x] POST successful
+ - [x] <b>mock_server</b> - Online server:
      Hosting the server and GUI online.
      - [x] Hosting a random Python script with Flask.
-     - [ ] Saving arbitrary text files on the server. 
+     - [x] Saving arbitrary text files on the server. 
  - [ ] Implementation of actual functions:
      Implementation of actual functions rather than dummy ones. 
      - [ ] Server API equipped with a function returning a single dataframe. Does not need to contain all information as the intention is to make it scalable and generalisable to addition of future statistics.
      - [ ] GUI capable of uploading a CSV file and displaying a HTML table. 
-     - [ ] Successful saving of CSV files on server. 
-     - [ ] Ability to manually delete CSV files on server. \[Optional: Ability to 'exclude' files rather than deleting them outright using a property in the file's metadata. Overwriting files overwrites the exclusion metadata, causing them to be included by defaeult. 
+     - [x] Successful saving of CSV files on server. 
+     - [x] Ability to manually delete CSV files on server. \[(Unimplemented) Optional: Ability to 'exclude' files rather than deleting them outright using a property in the file's metadata. Overwriting files overwrites the exclusion metadata, causing them to be included by default.] 
      - [ ] Somehow, we need to let the researchers input the severity of the file. One method is by enforcing the naming conventions already used as they will name the files after they finish the test. Otherwise, a team meeting may be required to overcome the recording of the severity level. We would, preferably, wish to avoid a one-by-one inputting of the severity level as that essentially reintroduces the manual task of an extra click or two/extra typing per pair of CSV files. 
  - [ ] Implementation of multiple users:
      Ensure the server can be used by multiple users at the same time. 
