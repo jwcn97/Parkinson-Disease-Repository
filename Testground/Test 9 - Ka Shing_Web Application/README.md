@@ -50,6 +50,7 @@ The web application serves to display Parkinson's data. The aim is build a web-b
      - [ ] Ability to upload an entire set of files (as the researchers may be uninterested in uploading a single file one by one if the dataframe itself isn't going to give an objective understanding of the patient's condition yet).
      
 ### Branch 1: Strict Questionnaire
+<b>forms_server</b>
  - [ ] Generate a table of questionnaires for each uploaded file. Some sections should automatically be filled based on the required nomenclature. However, <b>all</b> fields should be filled up before they can be sent. 
  
 ### Branch 1-1: Lenient Questionnaire
