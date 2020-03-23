@@ -259,7 +259,27 @@ def get_metrics(file):
     # Make a copy of the dictionary and all its contents
     file_copy = copy(file)
 
-    # [TODO] Metrics go here
+    # Metrics go here
+    metric_functions = []
+
+    # [TODO] Verify that this works
+    for f in metric_functions:
+        # Get the result
+        # It should be a dictionary/list of dictionaries
+        # Key-value pairs:
+        # metric_name (str)
+        #       Name of the metric, e.g. mean/standard deviation. 
+        #       Please use the appropriate/desired capitalization.
+        # metric_description (str)
+        #       How you obtained the metric. 
+        #       No code; either pseudo-code or mathematical understanding. 
+        # author (str)
+        #       Optional, but it's to keep track of who made what. 
+        # value (str)
+        #       The value to be displayed. 
+        #       It should be a string, not an integer/float/etc., so it makes it more flexible in case you want to pass a variety of values associated with one metric. 
+        #       I will be calling the 'str()' function on this value so even if you pass me an int/float/array, it will be fine, it just might not turn out in the format that you'd prefer. 
+        result = f(file_copy)
 
     return pd.DataFrame()
 
@@ -297,21 +317,86 @@ def copy(file):
 
 
 def build_page(dataframe):
+    """
+    Builds the HTML page to be returned
+
+    Parameters
+    ----------
+    dataframe (DataFrame())
+        The dataframe to be displayed, containing the file's metrics
+
+    Return
+    ------
+    html (str)
+        The HTML page to be displayed
+    """
     html = '<html>'
 
+    # HTML head
     html += '<head>'
     html += render_template('header.html')
     html += '</head>'
 
+    # HTML body
     html += '<body>'
+
+    # Uploading
     html += render_template('upload.html')
-    html += '</body>'
 
     if dataframe is not None: 
-        # [TODO] Return the dataframe as well
-        True
+        # Line break
+        html += '<hr>'
 
+        # Dataframe/HTML table
+        html += dataframe_to_table(dataframe)
+
+    # Closing tags
+    html += '</body>'
     html += '</html>'
 
     # return render_template('upload.html')
     return html
+
+
+def dataframe_to_table(dataframe):
+    """
+    Converts a Pandas dataframe to a HTML table.
+
+    Parameters
+    ----------
+    dataframe (DataFrame())
+        The Pandas dataframe to be converted into a HTML table. 
+
+    Returns
+    -------
+    html (str)
+        The HTML table to be rendered. 
+    """
+    html = ''
+    html += '<table>'
+    html += '<tbody>'
+
+    rows, cols = dataframe.shape
+    
+    # Headers
+    html += '<td>'
+    for col in range(cols):
+        html += '<td>'
+        html += str(dataframe.columns[col])
+        html += '</td>'
+
+    html += '</tr>'
+
+    # Data
+    for row in range(rows):
+        html += '<tr>'
+        for col in range(cols): 
+            html += '<td>'
+            html += str(dataframe.iloc[row, col])
+            html += '</td>'
+        html += '</tr>'
+        
+    html += '</tbody>'
+    html += '</table>'
+
+    return html 
