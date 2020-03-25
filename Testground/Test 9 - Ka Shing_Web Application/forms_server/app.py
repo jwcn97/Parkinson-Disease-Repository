@@ -54,51 +54,7 @@ def home():
     """
     Handles the logic that occurs whenever the home page is accessed/refreshed. 
     
-    ((The following is a discussion of the system states. The finalised system state can be found below.))
-    System states
-    -------------
-    STATE 1: UPLOAD
-        Contains the upload input
-        If there is a dataframe, show the dataframe
-        Options: 
-            1. Upload one file and submit
-                Proceed to STATE 2
-            2. Upload multiple files and submit
-                Proceed to STATE 2
-            3. Refresh the page
-                Reload to STATE 1
-                Retain the dataframe
-
-    STATE 2: DATA REQUEST
-        Contains the upload input
-        Contains the data request forms
-        Options: 
-            1. Upload one file and submit
-                Give warning on data loss; proceed to STATE 2
-            2. Upload multiple files and submit
-                Give warning on data loss; proceed to STATE 2
-            3. Refresh
-                Give warning on data loss; proceed to STATE 1
-                Retain the previous dataframe. 
-            4. Submit with no information
-                Refuse submission
-            5. Submit with partial information
-                If 'strict', refuse.
-                Else if 'lenient', save the appropriate information and request the remainder.
-                    Go to STATE 2. 
-            6. Submit with complete information
-                Save the information. 
-                Set dataframe and go to STATE 1 with dataframe enabled. 
-
-    We notice STATE 1 and STATE 2 can be combined. 
-    In both cases, we show the upload input. 
-    If there are queued files, we return the data request forms. 
-    Else if there are no queued files, we check for the dataframe metric. 
-    
-    For the options, 1 2 and 3 can give warning on data loss if there are queued files. Otherwise, they perform their actions. 
-    Options 4, 5 and 6 are handled if there are files queued. 
-
-    Finalised system state
+    System state
     ----------------------
     We show the upload input.
     If there are qeued files, we display the data request forms. 
@@ -125,7 +81,7 @@ def home():
     # Global variables
     global dataframe, raw_files, filtered_files, grouped_files, queued_files
 
-    print(dataframe, raw_files, filtered_files, grouped_files, queued_files)
+    # print(dataframe, raw_files, filtered_files, grouped_files, queued_files)
 
     # Check for the type of request
     # If it's a GET request, the page itself is requested
@@ -219,7 +175,9 @@ def home():
 
                     html_table_contents = bh('table', content=html_table_contents)
 
-                    html_body += bh('form', content=''.join([
+                    html_body += bh('form', 
+                    attr={'action':'/', 'method': "POST", 'name':'data-request-form'},
+                    content=''.join([
                         html_table_contents,
                         render_template('data_request_submit.html')
                     ]))
@@ -257,7 +215,7 @@ def home():
             raw_files = request.files.getlist("files")
             
             # [TODO] Ensure that none of them are 'False'
-            print(raw_files[0])
+            # print(raw_files[0])
 
             # We filter out the files given the extensions
             filtered_files = filter_file_extensions(raw_files, app.config["FILE_EXTENSIONS"])
@@ -276,6 +234,19 @@ def home():
 
             # We overwrite all arrays other than queued_files to save memory
             raw_files = range(len(raw_files))
+
+        # We check that, otherwise, a data request form has been submitted
+        if request.form:
+            for ix, i in enumerate(queued_files):
+                i['form_data'] = {
+                    'type': request.form.get("type-" + str(ix + 1)),
+                    'location': request.form.get("location-" + str(ix + 1)),
+                    'level': request.form.get("level-" + str(ix + 1)),
+                    'code': request.form.get("code-" + str(ix + 1))
+                }
+
+            for ix, i in enumerate(reversed(queued_files)):
+                print(i['form_data'])
 
         else: 
             # There are no files to be added to the queue
@@ -437,7 +408,8 @@ def group(dictionaries):
                 'version': dictionary['version'],
                 'modes': {
                     dictionary['mode']: dictionary
-                }
+                },
+                'mode_check': False
             })
 
     return result

@@ -24,18 +24,18 @@
     </td>
     <td>
         <!-- Type -->
-        <input type="text" value={{ type }}>
+        <input type="text" value="{{ type }}" name="type-{{ row_number }}">
     </td>
     <td>
         <!-- Test location -->
-        <input type="text"value={{ location }}> 
+        <input type="text"value="{{ location }}" name="location-{{ row_number }}"> 
     </td>
     <td>
         <!-- Level -->
-        <input type="text"value={{ level }}> 
+        <input type="text"value="{{ level }}" name="level-{{ row_number }}"> 
     </td>
     <td>
         <!-- Patient code -->
-        <input type="text"value={{ code }}> 
+        <input type="text"value="{{ code }}" name="code-{{ row_number }}"> 
     </td>
 </tr>
