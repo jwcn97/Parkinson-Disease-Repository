@@ -40,6 +40,10 @@ The web application serves to display Parkinson's data. The aim is build a web-b
      Implementation of actual functions rather than dummy ones. 
      - [x] Server API equipped with a function returning a single dataframe. Does not need to contain all information as the intention is to make it scalable and generalisable to addition of future statistics.
      - [x] GUI capable of uploading a CSV file and displaying a HTML table. 
+     - [ ] Metric functions are fully functional. 
+          - [ ] Jing Wei
+          - [ ] Chin Yang
+          - [ ] Ken Yew
      - [x] Successful saving of CSV files on server. 
      - [x] Ability to manually delete CSV files on server. \[(Unimplemented) Optional: Ability to 'exclude' files rather than deleting them outright using a property in the file's metadata. Overwriting files overwrites the exclusion metadata, causing them to be included by default.] 
      - [ ] Somehow, we need to let the researchers input the severity of the file. One method is by enforcing the naming conventions already used as they will name the files after they finish the test. Otherwise, a team meeting may be required to overcome the recording of the severity level. We would, preferably, wish to avoid a one-by-one inputting of the severity level as that essentially reintroduces the manual task of an extra click or two/extra typing per pair of CSV files. 
