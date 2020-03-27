@@ -1,0 +1,7 @@
+{% if num is defined %}
+    {% for i in range(0, num) %}
+    <div>
+        <label style="color: {{ colors[i] }}">{{ tags[i] }} </label>{{ msgs[i] }}
+    </div>
+    {% endfor %}
+{% endif %}

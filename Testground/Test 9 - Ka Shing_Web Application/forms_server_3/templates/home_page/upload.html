@@ -1,0 +1,35 @@
+<script>
+    updateList = function() {
+        // Update number of files
+        var input = document.getElementById('files');
+        var output = document.getElementById('number-of-files');
+        output.innerHTML = input.files.length
+
+        // Disable file upload
+        var submit = document.getElementById('btn-submit');
+        if (input.files.length == 0) {
+            submit.disabled = true;
+        } else {
+            submit.disabled = false;
+        }
+     }
+</script>
+
+<form action="/" method="POST" enctype="multipart/form-data" class="select-and-upload-files">
+    <div class="select-and-upload-files">
+        <div class="custom-file">
+            <button type="button">
+                <input type="file" class="custom-file-input" name="files" id="files" multiple onchange="javascript:updateList()">
+                <label class="custom-file-label" for="files">Select Files</label>
+            </button>
+        </div>
+
+        <div class="custom-file">
+            <button class="btn-btn-primary" type="submit" id='btn-submit' disabled onclick="this.disabled=ture">Upload files</button>
+        </div>
+    </div>
+</form>
+
+<div>
+    <label id="number-of-files">0</label> files selected.
+</div>
