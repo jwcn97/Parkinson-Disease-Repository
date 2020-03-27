@@ -8,7 +8,7 @@ from mmr import MMRFile, MMRSession
 from exceptions import UnsupportedNameFormatException 
 
 # === App ===
-app = Flask(__name__)
+app = Flask(__name__) 
  
 application = app # For AWS to locate the app
 
@@ -109,7 +109,7 @@ def home():
 
     # Reload the webpage's elements
     page.reload()
-
+ 
     # Check for the method
     if request.method == "POST":
         # Check if the POST request was a file upload or data request

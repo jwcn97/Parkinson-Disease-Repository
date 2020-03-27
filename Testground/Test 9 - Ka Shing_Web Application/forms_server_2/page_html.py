@@ -71,22 +71,6 @@ class Home():
             # Don't replace 'tag'
             True
 
-        # HTML to be returned
-        html = ''
-
-        # if tag != '':
-        #     html += build_html('label', attr={'class': notification_type}, content=tag)
-        #     html += ' '
-
-        # print(kwargs, notification_type, tag, html)
-
-        # html = build_html('div', content=''.join([
-        #     html, 
-        #     msg
-        # ]))
-
-        # self.notifications += html
-
         if self.notifications != '':
             # Add a line break if it's not the first notification
             self.notifications += '<br>'
