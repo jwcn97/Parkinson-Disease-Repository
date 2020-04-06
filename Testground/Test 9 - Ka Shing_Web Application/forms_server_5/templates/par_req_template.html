@@ -1,0 +1,56 @@
+{% if params is defined %}
+<form action="/" method="POST">
+    <table>
+        {% for row in range(-1, params|length) %}
+        {% if (row < 0) %}
+        <tr>
+            <th>No.</th>
+            <th>Session key</th>
+            {% if headers is defined %}
+            {% for header in headers %}
+            <th>{{ header["desc"] }}</th>
+            {% endfor %}
+            {% endif %}
+        </tr>
+        {% else %}
+        {% set p = params[row] %}
+        {% if p.valid_parameters == False %}
+        <tr>
+            <td style="vertical-align: top;">
+                <!-- index0 below does not need to be incremented or decremented because
+                the loop starts from -1 -->
+                {{ loop.index0 }}. [{{ p.index }}] 
+            </td>
+            <td>
+                <label>{{ p.session_key }}</label>
+                {% if p.descriptions is defined %}
+                {% for desc in p.descriptions %}
+                <br>
+                - <label>{{ desc }}</label>
+                {% endfor %}
+                {% endif %}
+            </td>
+            {% if p.parameters is defined %}
+            {% for input in p.parameters %}
+            <td style="vertical-align: top;">
+                <input name="{{ input.id }}-{{ p.index }}" value="{{ input.value }}">
+                {% if input.status is defined %}
+                {% if input.status == False %}
+                <br>
+                <label style="color: red; font-size: 12px;">Please try again.</label>
+                {% endif %}
+                {% endif %}
+            </td>
+            {% endfor %}
+            {% endif %}
+        </tr>
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+    </table>
+
+    <div class='custom-btn'>
+        <button type="submit" id="submit-data-request-form">Submit</button>
+    </div>
+</form>
+{% endif %}

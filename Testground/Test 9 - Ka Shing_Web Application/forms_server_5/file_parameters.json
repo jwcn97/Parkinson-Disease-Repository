@@ -1,0 +1,23 @@
+{
+    "test_type": {
+        "description": "Test type",
+        "values": ["ftap"]
+    },
+    "test_location": {
+        "description": "Test location",
+        "values": [
+            "forearm", 
+            "wrist"
+        ]
+    },
+    "severity": {
+        "description": "Severity level",
+        "values": [
+            "lvl0", 
+            "lvl1", 
+            "lvl2", 
+            "lvl3", 
+            "lvl4"
+        ]
+    }
+}

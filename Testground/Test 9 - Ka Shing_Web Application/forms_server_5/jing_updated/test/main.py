@@ -6,8 +6,8 @@ import math
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import truncation
-import handle
+from . import truncation
+from . import handle
 
 def timestat_acc(acc_t):
     appended1, appended3 = [], []
@@ -37,11 +37,11 @@ def timestat_acc(acc_t):
         # appending number of mean crossing
         xcrossings_a, ycrossings_a, zcrossings_a = [], [], []
         for i in range(1, len(ar_x)):
-            if ar_x[i-1] < mewx_a and ar_x[i] >= mewx_a:
+            if ar_x[i-1] < np.mean(L1) and ar_x[i] >= np.mean(L1):
                 xcrossings_a.append(i)
-            if ar_y[i-1] < mewy_a and ar_y[i] >= mewy_a:
+            if ar_y[i-1] < np.mean(L2) and ar_y[i] >= np.mean(L2):
                 ycrossings_a.append(i)
-            if ar_z[i-1] < mewz_a and ar_z[i] >= mewz_a:
+            if ar_z[i-1] < np.mean(L3) and ar_z[i] >= np.mean(L3):
                 zcrossings_a.append(i)
                 
         appended1.append([len(xcrossings_a), len(ycrossings_a), len(zcrossings_a)])
@@ -86,11 +86,11 @@ def timestat_gyr(gyro_t):
         
         xcrossings_g, ycrossings_g, zcrossings_g = [], [], []
         for i in range(1, len(ar_x)):
-            if ar_x[i-1] < mewx_g and ar_x[i] >= mewx_g:
+            if ar_x[i-1] < np.mean(L4) and ar_x[i] >= np.mean(L4):
                 xcrossings_g.append(i)
-            if ar_y[i-1] < mewy_g and ar_y[i] >= mewy_g:
+            if ar_y[i-1] < np.mean(L5) and ar_y[i] >= np.mean(L5):
                 ycrossings_g.append(i)
-            if ar_z[i-1] < mewz_g and ar_z[i] >= mewz_g:
+            if ar_z[i-1] < np.mean(L6) and ar_z[i] >= np.mean(L6):
                 zcrossings_g.append(i)
                 
         appended2.append([len(xcrossings_g), len(ycrossings_g), len(zcrossings_g)])
@@ -155,30 +155,22 @@ def main(filepath='/', window=3, truncate=None, columns=None):
         else:
             df = df_main
 
-        # find peaks in signal
+        # find peaks and troughs in signal
         time_p, p_plot, peaks, col = handle.find_peaks(title, df, 10)
         time_t, t_plot, troughs, col = handle.find_troughs(title, df, 10)
-        result_main = pd.concat([peaks, troughs], axis=0, join='outer', ignore_index=False)
-        result_main = result_main.sort_values(by=['time'])
-        result = result_main.reset_index(drop=True)
 
-        # find troughs in signal
+        # find jitter peaks and troughs in signal
         time_p_j, p_plot_j, peaks, col = handle.find_peaks(title, df, None)
         time_t_j, t_plot_j, troughs, col = handle.find_troughs(title, df, None)
         result_main = pd.concat([peaks, troughs], axis=0, join='outer', ignore_index=False)
         result_main = result_main.sort_values(by=['time'])
         result_main = result_main.reset_index(drop=True)
         result_jitters = handle.get_jitters(result_main)
-
-#         # plot altered peak and troughs with original signal
-#         start, end = 0, 300
-#         ax1=df.plot(x='elapsed (s)', y=[col], figsize=(16,7), title=title)
-#         result.plot.scatter(x='time', y='peaks', ax=ax1, s=140, c='r')
-#         result_jitters.plot.scatter(x='time', y='peaks', ax=ax1, s=70, c='b')
-#         ax1.grid(True)
-#         ax1.set_xlabel('time (s)')
-#         ax1.set_ylabel('amplitude')
-#         plt.show()
+        
+        time_p_j = list(result_jitters[result_jitters['peaks'] > 0]['time'])
+        p_plot_j = list(result_jitters[result_jitters['peaks'] > 0]['peaks'])
+        time_t_j = list(result_jitters[result_jitters['peaks'] < 0]['time'])
+        t_plot_j = list(result_jitters[result_jitters['peaks'] < 0]['peaks'])
 
         magunit = 'm/s^2' if 'Accelerometer' in file_name else 'degrees/s'
 
@@ -193,10 +185,11 @@ def main(filepath='/', window=3, truncate=None, columns=None):
                             'number of jitter peaks at +ve axis', 'average height of jitter peaks at +ve axis', 'standard deviation of height of jitter peaks at +ve axis', 'average width of jitter peaks at +ve axis', 'standard deviation of width of jitter peaks at +ve axis',
                             'number of main peaks at -ve axis', 'average height of main peaks at -ve axis', 'standard deviation of height of main peaks at -ve axis', 'average width of main peaks at -ve axis', 'standard deviation of width of main peaks at -ve axis',
                             'number of jitter peaks at -ve axis', 'average height of jitter peaks at -ve axis', 'standard deviation of height of jitter peaks at -ve axis', 'average width of jitter peaks at -ve axis', 'standard deviation of width of jitter peaks at -ve axis'],
-            # 'author': ['JW', 'JW', 'JW', 'JW', 'JW', 'JW', 'JW',
-            #             'JW', 'JW', 'JW', 'JW', 'JW',
-            #             'JW', 'JW', 'JW', 'JW', 'JW',
-            #             'JW', 'JW', 'JW', 'JW', 'JW'],
+            'author': ['JW', 'JW', 'JW', 'JW', 'JW', 'JW', 'JW',
+                        'JW', 'JW', 'JW', 'JW', 'JW',
+                        'JW', 'JW', 'JW', 'JW', 'JW',
+                        'JW', 'JW', 'JW', 'JW', 'JW',
+                        'JW', 'JW', 'JW', 'JW', 'JW'],
             'value': [title_main.split('-')[0], title_main.split('-')[2], file_name.split('_')[4], int(title_main.split('-')[1][-1]), test+1, col, df.loc[len(df)-1,'elapsed (s)']-df.loc[0,'elapsed (s)'],
                        len(time_p), np.mean(p_plot), np.std(p_plot), np.mean(np.diff(time_p)), np.std(np.diff(time_p)),
                        len(time_p_j), np.mean(p_plot_j), np.std(p_plot_j), np.mean(np.diff(time_p_j)), np.std(np.diff(time_p_j)),
@@ -247,7 +240,11 @@ def main(filepath='/', window=3, truncate=None, columns=None):
 
     return info
 
+
+def overall_main():
+    True
+
 cols = ['+ve actions_j', '+ve peak height_j', '+ve peak height_j std', '+ve peak width_j', '+ve peak width_j std','xy']
 
-info = main(filepath=input('Please Insert File Name (without .csv): '), truncate=truncation.values, columns=cols)
-print(json.dumps(info, indent=4))
+# info = main(filepath=input('Please Insert File Name (without .csv): '), truncate=truncation.values, columns=cols)
+# print(json.dumps(info, indent=4))
