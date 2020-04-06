@@ -1,0 +1,52 @@
+{% if indexes is defined %}
+<form action='/' method="POST" enctype="multipart/form-data" name="data-request-form">
+    <table>
+        {% for i in range(-1, rows) %}
+        {% if (i < 0)  %}
+        <tr>
+            <th>No.</th>
+            <th>Session Name</th>
+            {% if descriptions is defined %}
+            {% for desc in descriptions %}
+            <th>{{ desc }}</th>
+            {% endfor %}
+            {% endif %}
+        </tr>
+        {% else %}
+        <tr>
+            <td style="vertical-align: top;">
+                {{ i + 1 }}. [{{ indexes[i] }}]
+            </td>
+            <td> 
+                <label>
+                    {{ session_names[i] }}
+                </label>
+                {% if additional[i] is defined %}
+                    {% for extra in additional[i] %}
+                    <br>
+                    - <label>{{ extra }}</label>
+                    {% endfor %}
+                {% endif %}
+            </td>
+            <!-- {% if inputs is defined %} -->
+            <!-- {% for input in inputs %} -->
+            <!-- <td style="vertical-align: top;">
+                <input name="{{ input }}-{{ indexes[i] }}" value="{{ defaults[i][input] }}">
+            </td> -->
+            <!-- {% endfor %} -->
+            <!-- {% endif %} --> 
+            {% if descriptions is defined %}
+            {% for j in range(0, descriptions|length) %}
+            <td style="vertical-align: top;">
+                <input name="{{ input_id[i][j] }}" value="{{ defaults[i][j] }}">
+            </td>
+            {% endfor %}
+            {% endif %}
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </table>
+
+    <button type="submit" id="submit-data-request-form">Submit</button>
+</form>
+{% endif %}

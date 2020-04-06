@@ -1,0 +1,27 @@
+* {
+    font-family: Verdana;
+    font-size: 14px;
+}
+
+table, tr, td {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+div.upload-bar {
+    display: table-row;
+}
+
+div.custom-btn {
+    padding-right: 10px;
+    display: table-cell;
+}
+
+input.custom-file-input {
+    display: none;
+}
+
+label.custom-file-input {
+    border: 0px;
+    padding: 1px;
+}
