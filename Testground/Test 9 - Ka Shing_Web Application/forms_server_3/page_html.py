@@ -6,17 +6,18 @@ class Home():
     """
     A class to handle the HTML elements on the home page.
     """
-    def __init__(self, inputs, descriptions):
+    def __init__(self, inputs):
         """
         Constructor class.
         Instantiates the number of inputs during data requests.
 
         Parameters
         ----------
-        inputs = []
+        inputs = {}[]
+            key: id (str)
+            value: description (str)
         """
         self.inputs = inputs
-        self.descriptions = descriptions
         
 
     def reload(self):
@@ -95,16 +96,21 @@ class Home():
         })
 
 
-    def update_data_requests(self, session_name, index, add_info=[], defaults={}):
+    def update_data_requests(self, index, name, descriptions=[], inputs={}):
         """
         Updates the data requests form section.
 
         Parameters
         ----------
-        session_name (str)
-        add_info (str[])
-        defaults (dictionary array, {}[])
-            Based on self.inputs
+        index (int)
+            Session index
+        name (str)
+            Session name
+        description (str[])
+            A list of descriptions for the session
+        inputs ({}[])
+            An array of dictionaries. 
+            Each dictionary contains the input-default value pair. 
         """
         # defaults = {}
         # for i in self.inputs:
@@ -112,14 +118,21 @@ class Home():
         #         defaults[i] = defaults[i]
         #     except KeyError:
         #         defaults[i] = ''
-
-        self.sessions.append({
-            "session_name": session_name,
-            "index": index,
-            "additional_info": add_info,
-            "defaults": defaults,
-        })
         
+        # self.sessions.append({
+        #     "session_name": session_name,
+        #     "index": index,
+        #     "additional_info": add_info,
+        #     "defaults": defaults,
+        # })
+        
+        self.sessions.append({
+            "index": index,
+            "name": name,
+            "descriptions": descriptions,
+            "inputs": inputs
+        })
+
 
     def render(self):
         """
@@ -149,20 +162,57 @@ class Home():
                 msgs=[t["msg"] for t in self.notifications]
             )
 
+        # # === Data requests ===
+        # if self.sessions:
+        #     # print([t["defaults"] for t in self.sessions])
+        #     html += '<hr>'
+        #     html += render_template(
+        #         "home_page/data-requests.html",
+        #         indexes=[t["index"] for t in self.sessions],
+        #         rows=len(self.sessions),
+        #         session_names=[t["session_name"] for t in self.sessions],
+        #         additional=[t["additional_info"] for t in self.sessions],
+        #         inputs=self.inputs,
+        #         descriptions=self.descriptions,
+        #         defaults=[t["defaults"] for t in self.sessions]
+        #     )
+
         # === Data requests ===
         if self.sessions:
-            # print([t["defaults"] for t in self.sessions])
             html += '<hr>'
             html += render_template(
                 "home_page/data-requests.html",
-                indexes=[t["index"] for t in self.sessions],
-                rows=len(self.sessions),
-                session_names=[t["session_name"] for t in self.sessions],
-                additional=[t["additional_info"] for t in self.sessions],
-                inputs=self.inputs,
-                descriptions=self.descriptions,
-                defaults=[t["defaults"] for t in self.sessions]
+                headers=self.inputs,
+                sessions=self.sessions
             )
+
+            print(self.sessions)
+
+            # input_ids = []
+
+            # for i in range(len(self.sessions)):
+            #     columns_of_inputs = []
+
+            #     for j in range(len(self.descriptions)):
+            #         columns_of_inputs.append('-'.join([self.inputs[j], str(i)]))
+
+            #     input_ids.append(columns_of_inputs)                    
+
+            # # print([t["defaults"] for t in self.sessions])
+            # html += '<hr>'
+            # html += render_template(
+            #     "home_page/data-requests.html",
+            #     indexes=[t["index"] for t in self.sessions],
+            #     rows=len(self.sessions),
+            #     session_names=[t["session_name"] for t in self.sessions],
+            #     additional=[t["additional_info"] for t in self.sessions],
+            #     input_id=input_ids,
+            #     descriptions=self.descriptions, 
+            #     defaults=[t["defaults"] for t in self.sessions]
+            # )
+
+            # print('DEFAULTS:', [t["defaults"] for t in self.sessions])
+
 
         # html = ''
 
@@ -194,6 +244,7 @@ class Home():
         """
         return request.files.getlist("files")
 
+
     @staticmethod
     def post_form(request):
         """
@@ -207,8 +258,35 @@ class Home():
         Returns
         -------
         (dictionary array, {}[])
-            Key-value pairs             
+            key: "index" (str)
+                 
         """
+        # Instantiate form data
+        # Dictionary array
+        form_data = {}
+
+        # print(':: Request form:', request.form)
+
+        for k, v in request.form.items():
+            # Split key into index-test_id
+            key = k.split('-', maxsplit=1)
+
+            index = int(key[0])
+            test_id = key[1]
+            test_value = v 
+
+            try:
+                form_data[index].append({
+                    "test_id": test_id,
+                    "test_value": test_value
+                })
+            except KeyError:
+                form_data[index] = [{
+                    "test_id": test_id,
+                    "test_value": test_value
+                }]
+
+        return form_data
 
 #     def reload(self):
 #         """

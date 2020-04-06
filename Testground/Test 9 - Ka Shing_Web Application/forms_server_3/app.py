@@ -15,10 +15,10 @@ application = app # For AWS to locate the app
 # --- Application configurations ---
 # Location on AWS bucket to save uploaded files
 app.config["FILE_UPLOAD"] = 'files' 
- 
+  
 # Permitted extensions
 app.config["FILE_EXTENSIONS"] = ['.csv'] 
-
+ 
 # Permitted types of data, as per the lowercase of what meta
 # These MUST be in lowercase
 # e.g. "accelerometer", "gyroscope", "euler"
@@ -26,31 +26,27 @@ app.config["FILE_EXTENSIONS"] = ['.csv']
 app.config["FILE_TYPES"] = ["accelerometer", "gyroscope"]
 
 # Requested inputs
-app.config["INPUTS"] = {
-    "test_type": {
-        "description": 'Test type',
+app.config["INPUTS"] = [
+    {
+        "id": "test_type",
+        "description": "Test type",
         "legals": ["ftap"]
     },
-    "test_location": {
+    {
+        "id": "test_location",
         "description": "Test location",
         "legals": ["forearm", "wrist"]
     },
-    "severity": {
+    {
+        "id": "severity",
         "description": "Severity level",
         "legals": ["lvl0", "lvl1", "lvl2", "lvl3", "lvl4"]
-    },
-    # "patient_code": {
-    #     "description": "Patient code",
-    #     "legals": ''
-    # }
-}
+    }
+]
 
 # === Variables === 
 # HTML page object
-page = Home(
-    inputs=[t for t in app.config["INPUTS"].keys()],
-    descriptions=[t["description"] for t in app.config["INPUTS"].values()]
-)
+page = Home(app.config["INPUTS"])
 
 # Dataframe to hold file metrics
 dataframe = None 
@@ -206,9 +202,23 @@ def home():
 
         elif request.form:
             # Get saved names
-            session_save_filenames = page.post_forms(request)
+            session_form_data = page.post_form(request)
 
-            
+            print(session_form_data)
+
+            # Check for legality of data
+            for k, v in session_form_data.items():
+                # k is the index corresponding to the index of of our sessions in #sessions# variable
+                # v is a list of dictionaries with the fields "test_id" and "test_value"
+                # "test_id" corresponds to "id" in app.config["INPUTS"]
+                for vx in v:
+                    for i in app.config["INPUTS"]:
+                        if vx["test_id"] == i["id"]:
+                            # We found the INPUT id
+                            # Test for legality
+                            
+                
+                'test'
 
     elif request.method == "GET":
         True
@@ -219,9 +229,9 @@ def home():
     for sx, s in enumerate(list(filter(lambda x: x.valid_session, sessions))):
 
             # We attempt to extract the default values for each desired 'input'
-            defaults = {}
+            defaults = []
 
-            for inputs in app.config["INPUTS"].keys():
+            for inputs in app.config["INPUTS"]:
                 match = ''
                 saved_name = s.saved_name.split('-')
 
@@ -231,15 +241,19 @@ def home():
                 # Using the legal values of each input, 
                 # We run through the saved user name and attempt to extract a match
                 # [TODO] Write a program to ensure all legal values do not have overlaps
-                for legal_value in app.config["INPUTS"][inputs]["legals"]:
+                for legal_value in inputs["legals"]:
                     if legal_value.strip() in saved_name:
                         match = legal_value
                         break 
 
-                defaults[inputs] = match
+                defaults.append({
+                    "id": '-'.join([str(sx), inputs["id"]]),
+                    "default": match
+                })
                 
             # We update the data requests for this particular session
-            page.update_data_requests(s.session_name, index=sx, add_info=list(s.mmr_files.keys()), defaults=defaults)
+            # page.update_data_requests(s.session_name, index=sx, add_info=list(s.mmr_files.keys()), defaults=defaults)
+            page.update_data_requests(sx, s.session_name, descriptions=list(s.mmr_files.keys()), inputs=defaults)
 
     return page.render()
 

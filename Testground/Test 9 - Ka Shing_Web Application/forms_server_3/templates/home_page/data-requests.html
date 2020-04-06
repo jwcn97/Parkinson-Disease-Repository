@@ -1,45 +1,53 @@
-{% if indexes is defined %}
+{% if sessions is defined %}
 <form action='/' method="POST" enctype="multipart/form-data" name="data-request-form">
     <table>
-        {% for i in range(-1, rows) %}
-        {% if (i < 0)  %}
+        {% for row in range(-1, sessions|length) %}
+        {% if (row < 0)  %}
         <tr>
             <th>No.</th>
             <th>Session Name</th>
-            {% if inputs is defined %}
-            {% for desc in descriptions %}
-            <th>{{ desc }}</th>
+            {% if headers is defined %}
+            {% for header in headers %}
+            <th>{{ header["description"] }}</th>
             {% endfor %}
             {% endif %}
         </tr>
         {% else %}
+        {% set session = sessions[row] %}
         <tr>
             <td style="vertical-align: top;">
-                {{ i + 1 }}. [{{ indexes[i] }}]
+                {{ row + 1 }}. [{{ session["index"] }}]
             </td>
             <td> 
                 <label>
-                    {{ session_names[i] }}
+                    {{ session["name"] }}
                 </label>
-                {% if additional[i] is defined %}
-                    {% for extra in additional[i] %}
+                {% if session["descriptions"] is defined %}
+                    {% for desc in session["descriptions"] %}
                     <br>
-                    - <label>{{ extra }}</label>
+                    - <label>{{ desc }}</label>
                     {% endfor %}
                 {% endif %}
             </td>
-            {% if inputs is defined %}
-                {% for input in inputs %}
-                <td style="vertical-align: top;">
-                    <input name="{{ input }}-{{ indexes[i] }}" value="{{ defaults[i][input] }}">
-                </td>
-                {% endfor %}
+            <!-- {% if inputs is defined %} -->
+            <!-- {% for input in inputs %} -->
+            <!-- <td style="vertical-align: top;">
+                <input name="{{ input }}-{{ indexes[i] }}" value="{{ defaults[i][input] }}">
+            </td> -->
+            <!-- {% endfor %} -->
+            <!-- {% endif %} --> 
+            {% if session["inputs"] is defined %}
+            {% for input in session["inputs"] %}
+            <td style="vertical-align: top;">
+                <input name="{{ input["id"] }}" value="{{ input["default"] }}">
+            </td>
+            {% endfor %}
             {% endif %}
         </tr>
         {% endif %}
         {% endfor %}
     </table>
 
-    <button type="submit">Submit</button>
+    <button type="submit" id="submit-data-request-form">Submit</button>
 </form>
 {% endif %}
