@@ -50,7 +50,7 @@ This file comprises of all the code used for analyses that has been done up to d
 - [X] Plots truncated accelerometer and gyroscope data succesfully
 
 ####  + Time-domain Statistics
-##### Desriptive Statistics
+##### Descriptive Statistics
 - [ ] Central Tendency Measures
     - [X] Arithmetic Mean
     - [ ] Median 
@@ -86,7 +86,7 @@ This file comprises of all the code used for analyses that has been done up to d
     - [ ] Power Spectral Density vs Frequency
 
 #### + Frequency-domain Statistics
-##### Desriptive Statistics
+##### Descriptive Statistics
 #Done by Ken
 - [ ] Central Tendency Measures
     - [X] Arithmetic Mean
