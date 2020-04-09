@@ -27,50 +27,34 @@ The folders contain simple motion test data where video recording has been taken
 ----
 This file comprises of all the code used for analyses that has been done up to date. It will also include some comments to explain the methodology of the code and its relevance to the data retrieved. Certain form of testing works are carried out to validate the functions' output.
 
-#### - Importing Libraries
-
-----
+#### **Importing Libraries**
 - [X] Implementation of itertool: combinations
 - [ ] Implementation of scipy.signal: find_peaks and peak prominences
 - [X] Fixed mpld3 to allow plugins and widgets to work for scatter plots and colorbars
 - [ ] Fixed tqdm to display running time of code
 
-#### - Directory Check
-
-----
+#### **Directory Check**
 - [X] Navigates successfully to different data folders or specific .csv files from current working directory
 
-#### - Configuration Testing
-
-----
+#### **Configuration Testing**
 - [ ] Check that every data set has adhere to the nomenclature accurately
 
-#### - Orientation Testing
-
-----
+#### **Orientation Testing**
 - [X] Comparison on results dominantly using linear acceleration, quaternion and euler angles.
 - [X] Testing difference in accelerometer and gyroscope results with deployment of sensors on front and back of wrist
 
-#### - Retrieving Raw Data
-
-----
+#### **Retrieving Raw Data**
 - [X] Displays raw motion data from designated folder path correctly
 
-#### - Truncating Data
-
-----
+#### **Truncating Data**
 - [X] Functionality of manual truncation with exhaustive elsif statements
 - [ ] Automatic truncation with key features analysed from time series waveforms. #Still undergoing testing
 
-#### - Time Series Data
-
-----
+#### **Time Series Data**
 - [X] Plots truncated accelerometer and gyroscope data succesfully
 
-#### - Time-domain Statistics
-
-----
-####  _Descriptive Statistics_
+#### **Time-domain Statistics**
+#### _Descriptive Statistics_
 - [ ] Central Tendency Measures
     - [X] Arithmetic Mean
     - [ ] Median 
@@ -97,9 +81,7 @@ This file comprises of all the code used for analyses that has been done up to d
 - [ ] Height and width of dominant peaks and troughs 
 - [ ] Height and width of subsidiary peaks and troughs
 
-#### - Frequency Spectrum
-
-----
+#### **Frequency Spectrum**
 - [X] Fast Fourier Transform
 - [ ] Frequency Analysis
     - [ ] Amplitude vs Frequency
@@ -107,9 +89,7 @@ This file comprises of all the code used for analyses that has been done up to d
     - [ ] Power vs Frequency
     - [ ] Power Spectral Density vs Frequency
 
-#### - Frequency-domain Statistics
-
-----
+#### **Frequency-domain Statistics**
 #### _Descriptive Statistics_
 #Done by Ken
 - [ ] Central Tendency Measures
@@ -130,37 +110,29 @@ This file comprises of all the code used for analyses that has been done up to d
 #### _Exploratory Data Analysis_
 - [ ] Spectrogram. #A 3D measure the change in frequency along with its intensity with variation of time. Though, a mismatch in values with colorbar is still a concern here.
 
-#### - Feature Selection
-
-----
+#### **Feature Selection**
 This section of the code will serve as evaluation purposes for all the statistics or indicators used for classification. The features will then be tentatively ranked according to the metric of evaluations.
 - [ ] Accuracy.  #The accuracy achieved will be representative of the uni-directional trend shown across severity levels.
     - [ ] Gini impurity # To be reconsidered. This is the measure for the misclassification data set, based on the features finalised for classification.
 - [ ] Distinguishability. #Measure the extent of significance of the feature, across severity levels. Metrics for this could be absolute difference or ratio.
 - [ ] Precision. #This will be use to measure the consistency of the features' accuracy and distinguishability, across data sets.
 
-#### - Smoothen Data
-
-----
+#### **Smoothen Data**
 - [ ] Filter works. #Check with Ken
 
-#### - Noise
-
-----
+#### **Noise**
 - [ ] Background noise check for sensors. #Still need checks
 - [ ] 
 
-#### - Archive
-
-----
-- [] Notes prior for data pre-processing
-    - [] Error checks
-    - [] Identifying patterns and observations
-    - [] Insights for automatic truncation
-    - [] Additional notes for feature extraction
-- [] Manual truncation timestamps for new data sets
-- [] Cross check on 
-- [] Debugging issues in frequency domain
+#### **Archive**
+- [ ] Notes prior for data pre-processing
+    - [ ] Error checks
+    - [ ] Identifying patterns and observations
+    - [ ] Insights for automatic truncation
+    - [ ] Additional notes for feature extraction
+- [ ] Manual truncation timestamps for new data sets
+- [ ] Cross check on 
+- [ ] Debugging issues in frequency domain
 
 
 ### Insights on Experiment & Insights on Motion Tests
