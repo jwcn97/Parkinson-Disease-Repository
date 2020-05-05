@@ -14,4 +14,4 @@ patient003: patient data folder
 
 README.md: readme file
 
-- Testground (contains some future works that are mentioned in section 7.2)
+- Testground (contains some future works)
