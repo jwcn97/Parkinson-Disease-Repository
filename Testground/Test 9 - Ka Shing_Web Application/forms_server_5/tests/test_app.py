@@ -251,6 +251,10 @@ def test_post_form():
     assert False, "Unimplemented"
 
 
+def test_get_metrics():
+    assert False, "Unimplemented"
+
+
 # --- HTML ---
 def test_html():
     assert False, "Unimplemented"

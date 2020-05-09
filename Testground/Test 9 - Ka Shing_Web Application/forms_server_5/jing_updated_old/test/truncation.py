@@ -63,17 +63,21 @@ values = {
 
 dictionary = {
     'statistic': ['test', 'sensor', 'datatype', 'lvl', 'try', 'axis', 'duration',
-                    'peak actions', 'peak height', 'peak height std', 'peak width', 'peak width std',
-                    'peak actions_j', 'peak height_j', 'peak height_j std', 'peak width_j', 'peak width_j std',
-                    'trough actions', 'trough height', 'trough height std', 'trough width', 'trough width std',
-                    'trough actions_j', 'trough height_j', 'trough height_j std', 'trough width_j', 'trough width_j std',
-                    'zcr', 'mcr', 'xy', 'xz', 'yz'],
+                    '+ve actions', '+ve peak height', '+ve peak height std', '+ve peak width', '+ve peak width std',
+                    '+ve actions_j', '+ve peak height_j', '+ve peak height_j std', '+ve peak width_j', '+ve peak width_j std',
+                    '-ve actions', '-ve peak height', '-ve peak height std', '-ve peak width', '-ve peak width std',
+                    '-ve actions_j', '-ve peak height_j', '-ve peak height_j std', '-ve peak width_j', '-ve peak width_j std',
+                    'zcr-x', 'zcr-y', 'zcr-z',
+                    'mcr-x', 'mcr-y', 'mcr-z',
+                    'xy', 'xz', 'yz'],
     'description': ['test', 'sensor location', 'datatype', 'level of severity', 'try', 'significant axis', 'duration',
-                    'number of main peaks', 'average height of main peaks', 'standard deviation of height of main peaks', 'average width of main peaks', 'standard deviation of width of main peaks',
-                    'number of jitter peaks', 'average height of jitter peaks', 'standard deviation of height of jitter peaks', 'average width of jitter peaks', 'standard deviation of width of jitter peaks',
-                    'number of main troughs', 'average height of main troughs', 'standard deviation of height of main troughs', 'average width of main troughs', 'standard deviation of width of main troughs',
-                    'number of jitter troughs', 'average height of jitter troughs', 'standard deviation of height of jitter troughs', 'average width of jitter troughs', 'standard deviation of width of jitter troughs'
-                    'zero crossing rate', 'mean crossing rate', 'xy covariance', 'xz covariance', 'yz covariance']
+                    'number of main peaks at +ve axis', 'average height of main peaks at +ve axis', 'standard deviation of height of main peaks at +ve axis', 'average width of main peaks at +ve axis', 'standard deviation of width of main peaks at +ve axis',
+                    'number of jitter peaks at +ve axis', 'average height of jitter peaks at +ve axis', 'standard deviation of height of jitter peaks at +ve axis', 'average width of jitter peaks at +ve axis', 'standard deviation of width of jitter peaks at +ve axis',
+                    'number of main peaks at -ve axis', 'average height of main peaks at -ve axis', 'standard deviation of height of main peaks at -ve axis', 'average width of main peaks at -ve axis', 'standard deviation of width of main peaks at -ve axis',
+                    'number of jitter peaks at -ve axis', 'average height of jitter peaks at -ve axis', 'standard deviation of height of jitter peaks at -ve axis', 'average width of jitter peaks at -ve axis', 'standard deviation of width of jitter peaks at -ve axis',
+                    'zero crossing rate - x', 'zero crossing rate - y', 'zero crossing rate - z',
+                    'mean crossing rate - x', 'mean crossing rate - y', 'mean crossing rate - z',
+                    'xy covariance', 'xz covariance', 'yz covariance']
 }
 
 # values = [

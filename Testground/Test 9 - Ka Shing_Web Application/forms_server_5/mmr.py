@@ -11,6 +11,8 @@ class MMRFile():
 
     Attributes
     ----------
+    filename(str)
+        The name of the file
     session_name (str)
         The name of the session as given by the user when setting up the MetaBase app.
     session_metadata (str)
@@ -35,6 +37,8 @@ class MMRFile():
         fs (FileStorage)
         """
         filename = fs.filename
+
+        self.filename = filename
 
         # Get regex and match
         regex = "(.*)_.*_(\d+-\d+-\d+T\d+\.\d+\.\d+\.\d+_\w+)_([\w\s]+)_(.*)\.(.*)"

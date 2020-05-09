@@ -8,56 +8,50 @@ def cal_mean(c):
 
 def get_jitters(df):
     df['discard'] = 0
+
+    pos_mean = np.mean(df[df['peaks'] > 0].peaks)
+    neg_mean = np.mean(df[df['peaks'] < 0].peaks)
     
     for i, row in df.iterrows():
-        pos_mean = np.mean(df[df['peaks'] > 0].peaks)
-        neg_mean = np.mean(df[df['peaks'] < 0].peaks)
-
-        for i, row in df.iterrows():
-            if df.loc[i, 'peaks'] > 0:
-                if df.loc[i, 'peaks'] > pos_mean:
-                    df.at[i, 'discard'] = 1
-            elif df.loc[i, 'peaks'] < 0:
-                if df.loc[i, 'peaks'] < neg_mean:
-                    df.at[i, 'discard'] = 1
+        if df.loc[i, 'peaks'] > 0:
+            if df.loc[i, 'peaks'] > pos_mean:
+                df.at[i, 'discard'] = 1
+        elif df.loc[i, 'peaks'] < 0:
+            if df.loc[i, 'peaks'] < neg_mean:
+                df.at[i, 'discard'] = 1
     
     return df[df['discard'] == 0]
 
-def peak_cols(title):
-    if 'ftap' in title:
-        col = 'x'
-        # if 'Accelerometer' in title: col = 'z'
-        # elif 'Gyroscope' in title:   col = 'y'
-    elif 'hmove' in title:
-        col = 'x'
-        # if 'Accelerometer' in title: col = 'z'
-        # elif 'Gyroscope' in title:   col = 'y'
-    elif 'tota' in title:
-        col = 'z'
-        # col = 'y'
-
-    return col
-
 def find_peaks(title, df, d):
-    # return threshold values depending on dataset
-    col = peak_cols(title)
+    time_p_main = []
+    p_plot_main = []
+    peaks_main = []
     
-    p, p_prop = signal.find_peaks(df[col], height=0, distance=d)
-    time_p = [df.loc[i,'elapsed (s)'] for i in p]
-    p_plot = p_prop['peak_heights']
+    for ax in ['x','y','z','resultant']:
+        p, p_prop = signal.find_peaks(df[ax], height=0, distance=d)
+        time_p = [df.loc[i,'elapsed (s)'] for i in p]
+        p_plot = p_prop['peak_heights']
+        peaks = pd.DataFrame({ 'time': time_p, 'peaks': p_plot })
 
-    peaks = pd.DataFrame({ 'time': time_p, 'peaks': p_plot })
+        time_p_main.append(time_p)
+        p_plot_main.append(p_plot)
+        peaks_main.append(peaks)
     
-    return time_p, p_plot, peaks, col
+    return time_p_main, p_plot_main, peaks_main
 
 def find_troughs(title, df, d):
-    # return threshold values depending on dataset
-    col = peak_cols(title)
+    time_t_main = []
+    t_plot_main = []
+    troughs_main = []
     
-    t, t_prop = signal.find_peaks(-df[col], height=0, distance=d)
-    time_t = [df.loc[i,'elapsed (s)'] for i in t]
-    t_plot = -t_prop['peak_heights']
+    for ax in ['x','y','z','resultant']:
+        t, t_prop = signal.find_peaks(-df[ax], height=0, distance=d)
+        time_t = [df.loc[i,'elapsed (s)'] for i in t]
+        t_plot = -t_prop['peak_heights']
+        troughs = pd.DataFrame({ 'time': time_t, 'peaks': t_plot })
 
-    troughs = pd.DataFrame({ 'time': time_t, 'peaks': t_plot })
+        time_t_main.append(time_t)
+        t_plot_main.append(t_plot)
+        troughs_main.append(troughs)
     
-    return time_t, t_plot, troughs, col
+    return time_t_main, t_plot_main, troughs_main

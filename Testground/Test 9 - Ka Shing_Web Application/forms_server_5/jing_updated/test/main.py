@@ -112,30 +112,32 @@ def cal_magnitude(df, file, window):
         df['x'] = df.loc[window-1:,'x-axis (g)']-df['x-axis (g)'].rolling(window).mean()[window-1:]
         df['y'] = df.loc[window-1:,'y-axis (g)']-df['y-axis (g)'].rolling(window).mean()[window-1:]
         df['z'] = df.loc[window-1:,'z-axis (g)']-df['z-axis (g)'].rolling(window).mean()[window-1:]
-        df['magnitude'] = df['x']**2 + df['y']**2 + df['z']**2
-        df['magnitude'] = (df['magnitude'].apply(math.sqrt))*9.81
         
     elif 'Gyroscope' in file:
         df['x'] = df.loc[window-1:,'x-axis (deg/s)']-df['x-axis (deg/s)'].rolling(window).mean()[window-1:]
         df['y'] = df.loc[window-1:,'y-axis (deg/s)']-df['x-axis (deg/s)'].rolling(window).mean()[window-1:]
         df['z'] = df.loc[window-1:,'z-axis (deg/s)']-df['x-axis (deg/s)'].rolling(window).mean()[window-1:]
-        df['magnitude'] = df['x']**2 + df['y']**2 + df['z']**2
-        df['magnitude'] = df['magnitude'].apply(math.sqrt)
+        
+    df['resultant'] = df['x']**2 + df['y']**2 + df['z']**2
+    df['resultant'] = df['resultant'].apply(math.sqrt)
         
     return df
 
 # MAIN FUNCTION
-def main(filepath='/', window=3, truncate=None, columns=None):
+def main(filepath='/', df=None, window=3, truncate=None, columns=None):
     info = []
     path = 'Motion Data/' + filepath + '.csv'
     file_name = path.split('/')[1]
     title_main = file_name.split('_')[0]
 
     # append user's requested metrics to the default metrics
-    columns = ['test','sensor','datatype','lvl','try','duration'] + columns
+    columns = ['test','sensor','datatype','lvl','duration'] + columns
 
     # extract dataframe
-    df_main = pd.read_csv(path)
+    if df is None: 
+        df_main = pd.read_csv(path)
+    else:
+        df_main = df
 
     # find moving average of triaxial data and combine them into one singular magnitude data
     df_main = cal_magnitude(df_main, file_name, window)
@@ -148,61 +150,87 @@ def main(filepath='/', window=3, truncate=None, columns=None):
                  '-' + file_name.split('_')[4])
 
         # truncate signal beyond start and end times
-        if (truncate is not None) and (truncate[filepath][test] != ()):
-            df = df_main.loc[(df_main['elapsed (s)'] <= truncate[filepath][test][1]) & 
-                             (df_main['elapsed (s)'] >= truncate[filepath][test][0])]
-            df.reset_index(inplace=True)
-        else:
+        try:
+            if (truncate is not None) and (truncate[filepath] is not None) and (truncate[filepath][test] != ()):
+                df = df_main.loc[(df_main['elapsed (s)'] <= truncate[filepath][test][1]) & 
+                                (df_main['elapsed (s)'] >= truncate[filepath][test][0])]
+                df.reset_index(inplace=True)
+            else:
+                df = df_main
+        except KeyError:
             df = df_main
 
         # find peaks and troughs in signal
-        time_p, p_plot, peaks, col = handle.find_peaks(title, df, 10)
-        time_t, t_plot, troughs, col = handle.find_troughs(title, df, 10)
-
-        # find jitter peaks and troughs in signal
-        time_p_j, p_plot_j, peaks, col = handle.find_peaks(title, df, None)
-        time_t_j, t_plot_j, troughs, col = handle.find_troughs(title, df, None)
-        result_main = pd.concat([peaks, troughs], axis=0, join='outer', ignore_index=False)
-        result_main = result_main.sort_values(by=['time'])
-        result_main = result_main.reset_index(drop=True)
-        result_jitters = handle.get_jitters(result_main)
+        time_p_main, p_plot_main, peaks_main = handle.find_peaks(title, df, 10)
+        time_t_main, t_plot_main, troughs_main = handle.find_troughs(title, df, 10)
         
-        time_p_j = list(result_jitters[result_jitters['peaks'] > 0]['time'])
-        p_plot_j = list(result_jitters[result_jitters['peaks'] > 0]['peaks'])
-        time_t_j = list(result_jitters[result_jitters['peaks'] < 0]['time'])
-        t_plot_j = list(result_jitters[result_jitters['peaks'] < 0]['peaks'])
+        # find jitter peaks and troughs in signal
+        time_p_jitter, p_plot_jitter, peaks_jitter = handle.find_peaks(title, df, None)
+        time_t_jitter, t_plot_jitter, troughs_jitter = handle.find_troughs(title, df, None)
+        
+        # separate into different axis
+        axes = ['x', 'y', 'z', 'resultant']
+        time_p_j_main = []
+        p_plot_j_main = []
+        time_t_j_main = []
+        t_plot_j_main = []
+        
+        for i in range(len(axes)):
+            result_main = pd.concat([peaks_main[i], troughs_main[i]], axis=0, join='outer', ignore_index=False)
+            result_main = result_main.sort_values(by=['time'])
+            result = result_main.reset_index(drop=True)
 
-        magunit = 'm/s^2' if 'Accelerometer' in file_name else 'degrees/s'
+            result_main = pd.concat([peaks_jitter[i], troughs_jitter[i]], axis=0, join='outer', ignore_index=False)
+            result_main = result_main.sort_values(by=['time'])
+            result_main = result_main.reset_index(drop=True)
+            result_jitters = handle.get_jitters(result_main)
+
+            time_p_j_main.append(list(result_jitters[result_jitters['peaks'] > 0]['time']))
+            p_plot_j_main.append(list(result_jitters[result_jitters['peaks'] > 0]['peaks']))
+            time_t_j_main.append(list(result_jitters[result_jitters['peaks'] < 0]['time']))
+            t_plot_j_main.append(list(result_jitters[result_jitters['peaks'] < 0]['peaks']))
+
+        magunit = 'm s^-2' if 'Accelerometer' in file_name else 'degree s^-1'
 
         obj = pd.DataFrame({
+            'author': ['JW'] * 27,
+            'trial': [test] * 27,
             'metric_name': ['test', 'sensor', 'datatype', 'lvl', 'try', 'axis', 'duration',
-                          '+ve actions', '+ve peak height', '+ve peak height std', '+ve peak width', '+ve peak width std',
-                          '+ve actions_j', '+ve peak height_j', '+ve peak height_j std', '+ve peak width_j', '+ve peak width_j std',
-                          '-ve actions', '-ve peak height', '-ve peak height std', '-ve peak width', '-ve peak width std',
-                          '-ve actions_j', '-ve peak height_j', '-ve peak height_j std', '-ve peak width_j', '-ve peak width_j std'],
+                          'peak actions', 'peak height', 'peak height std', 'peak width', 'peak width std',
+                          'peak actions_j', 'peak height_j', 'peak height_j std', 'peak width_j', 'peak width_j std',
+                          'trough actions', 'trough height', 'trough height std', 'trough width', 'trough width std',
+                          'trough actions_j', 'trough height_j', 'trough height_j std', 'trough width_j', 'trough width_j std'],
             'metric_description': ['test', 'sensor location', 'datatype', 'level of severity', 'try', 'significant axis', 'duration',
-                            'number of main peaks at +ve axis', 'average height of main peaks at +ve axis', 'standard deviation of height of main peaks at +ve axis', 'average width of main peaks at +ve axis', 'standard deviation of width of main peaks at +ve axis',
-                            'number of jitter peaks at +ve axis', 'average height of jitter peaks at +ve axis', 'standard deviation of height of jitter peaks at +ve axis', 'average width of jitter peaks at +ve axis', 'standard deviation of width of jitter peaks at +ve axis',
-                            'number of main peaks at -ve axis', 'average height of main peaks at -ve axis', 'standard deviation of height of main peaks at -ve axis', 'average width of main peaks at -ve axis', 'standard deviation of width of main peaks at -ve axis',
-                            'number of jitter peaks at -ve axis', 'average height of jitter peaks at -ve axis', 'standard deviation of height of jitter peaks at -ve axis', 'average width of jitter peaks at -ve axis', 'standard deviation of width of jitter peaks at -ve axis'],
-            'author': ['JW', 'JW', 'JW', 'JW', 'JW', 'JW', 'JW',
-                        'JW', 'JW', 'JW', 'JW', 'JW',
-                        'JW', 'JW', 'JW', 'JW', 'JW',
-                        'JW', 'JW', 'JW', 'JW', 'JW',
-                        'JW', 'JW', 'JW', 'JW', 'JW'],
-            'value': [title_main.split('-')[0], title_main.split('-')[2], file_name.split('_')[4], int(title_main.split('-')[1][-1]), test+1, col, df.loc[len(df)-1,'elapsed (s)']-df.loc[0,'elapsed (s)'],
-                       len(time_p), np.mean(p_plot), np.std(p_plot), np.mean(np.diff(time_p)), np.std(np.diff(time_p)),
-                       len(time_p_j), np.mean(p_plot_j), np.std(p_plot_j), np.mean(np.diff(time_p_j)), np.std(np.diff(time_p_j)),
-                       len(time_t), np.mean(t_plot), np.std(t_plot), np.mean(np.diff(time_t)), np.std(np.diff(time_t)),
-                       len(time_t_j), np.mean(t_plot_j), np.std(t_plot_j), np.mean(np.diff(time_t_j)), np.std(np.diff(time_t_j))],
-            'units': ['-', '-', '-', '-', '-', '-', 's',
-                      '-', magunit, '-', 's', '-',
-                      '-', magunit, '-', 's', '-',
-                      '-', magunit, '-', 's', '-',
-                      '-', magunit, '-', 's', '-'],
+                                   'number of main peaks', 'average height of main peaks', 'standard deviation of height of main peaks', 'average width of main peaks', 'standard deviation of width of main peaks',
+                                   'number of jitter peaks', 'average height of jitter peaks', 'standard deviation of height of jitter peaks', 'average width of jitter peaks', 'standard deviation of width of jitter peaks',
+                                   'number of main troughs', 'average height of main troughs', 'standard deviation of height of main troughs', 'average width of main troughs', 'standard deviation of width of main troughs',
+                                   'number of jitter troughs', 'average height of jitter troughs', 'standard deviation of height of jitter troughs', 'average width of jitter troughs', 'standard deviation of width of jitter troughs'],
+            'x': [title_main.split('-')[0], title_main.split('-')[2], file_name.split('_')[4], int(title_main.split('-')[1][-1]), test+1, 'x', df.loc[len(df)-1,'elapsed (s)']-df.loc[0,'elapsed (s)'],
+                  len(time_p_main[0]), np.mean(p_plot_main[0]), np.std(p_plot_main[0]), np.mean(np.diff(time_p_main[0])), np.std(np.diff(time_p_main[0])),
+                  len(time_p_j_main[0]), np.mean(p_plot_j_main[0]), np.std(p_plot_j_main[0]), np.mean(np.diff(time_p_j_main[0])), np.std(np.diff(time_p_j_main[0])),
+                  len(time_t_main[0]), np.mean(t_plot_main[0]), np.std(t_plot_main[0]), np.mean(np.diff(time_t_main[0])), np.std(np.diff(time_t_main[0])),
+                  len(time_t_j_main[0]), np.mean(t_plot_j_main[0]), np.std(t_plot_j_main[0]), np.mean(np.diff(time_t_j_main[0])), np.std(np.diff(time_t_j_main[0]))],
+            'y': [title_main.split('-')[0], title_main.split('-')[2], file_name.split('_')[4], int(title_main.split('-')[1][-1]), test+1, 'x', df.loc[len(df)-1,'elapsed (s)']-df.loc[0,'elapsed (s)'],
+                  len(time_p_main[1]), np.mean(p_plot_main[1]), np.std(p_plot_main[1]), np.mean(np.diff(time_p_main[1])), np.std(np.diff(time_p_main[1])),
+                  len(time_p_j_main[1]), np.mean(p_plot_j_main[1]), np.std(p_plot_j_main[1]), np.mean(np.diff(time_p_j_main[1])), np.std(np.diff(time_p_j_main[1])),
+                  len(time_t_main[1]), np.mean(t_plot_main[1]), np.std(t_plot_main[1]), np.mean(np.diff(time_t_main[1])), np.std(np.diff(time_t_main[1])),
+                  len(time_t_j_main[1]), np.mean(t_plot_j_main[1]), np.std(t_plot_j_main[1]), np.mean(np.diff(time_t_j_main[1])), np.std(np.diff(time_t_j_main[1]))],
+            'z': [title_main.split('-')[0], title_main.split('-')[2], file_name.split('_')[4], int(title_main.split('-')[1][-1]), test+1, 'x', df.loc[len(df)-1,'elapsed (s)']-df.loc[0,'elapsed (s)'],
+                  len(time_p_main[2]), np.mean(p_plot_main[2]), np.std(p_plot_main[2]), np.mean(np.diff(time_p_main[2])), np.std(np.diff(time_p_main[2])),
+                  len(time_p_j_main[2]), np.mean(p_plot_j_main[2]), np.std(p_plot_j_main[2]), np.mean(np.diff(time_p_j_main[2])), np.std(np.diff(time_p_j_main[2])),
+                  len(time_t_main[2]), np.mean(t_plot_main[2]), np.std(t_plot_main[2]), np.mean(np.diff(time_t_main[2])), np.std(np.diff(time_t_main[2])),
+                  len(time_t_j_main[2]), np.mean(t_plot_j_main[2]), np.std(t_plot_j_main[2]), np.mean(np.diff(time_t_j_main[2])), np.std(np.diff(time_t_j_main[2]))],
+            'resultant': [title_main.split('-')[0], title_main.split('-')[2], file_name.split('_')[4], int(title_main.split('-')[1][-1]), test+1, 'x', df.loc[len(df)-1,'elapsed (s)']-df.loc[0,'elapsed (s)'],
+                          len(time_p_main[3]), np.mean(p_plot_main[3]), np.std(p_plot_main[3]), np.mean(np.diff(time_p_main[3])), np.std(np.diff(time_p_main[3])),
+                          len(time_p_j_main[3]), np.mean(p_plot_j_main[3]), np.std(p_plot_j_main[3]), np.mean(np.diff(time_p_j_main[3])), np.std(np.diff(time_p_j_main[3]))] +
+                          (['-'] * 10),
+            'x_unit': (['-'] * 6) + ['s'] + (['-', magunit, '-', 's', '-'] * 4),
+            'y_unit': (['-'] * 6) + ['s'] + (['-', magunit, '-', 's', '-'] * 4),
+            'z_unit': (['-'] * 6) + ['s'] + (['-', magunit, '-', 's', '-'] * 4),
+            'resultant_unit': (['-'] * 6) + ['s'] + (['-', magunit, '-', 's', '-'] * 4)
         })
 
-        info.append(obj[obj['metric_name'].isin(columns)])
+        info += eval(obj[obj['metric_name'].isin(columns)].to_json(orient='records'))
 
         # for zero crossing rate, mean crossing rate and covariance
         if 'Accelerometer' in file_name: acc.append(df)
@@ -215,36 +243,36 @@ def main(filepath='/', window=3, truncate=None, columns=None):
     # append zero crossing rate, mean crossing rate and covariance data
     for i in range(3):
         obj2 = pd.DataFrame({
-            'metric_name': ['zcr-x', 'zcr-y', 'zcr-z',
-                          'mcr-x', 'mcr-y', 'mcr-z',
-                          'xy', 'xz', 'yz'],
-            'metric_description': ['zero crossing rate - x', 'zero crossing rate - y', 'zero crossing rate - z',
-                            'mean crossing rate - x', 'mean crossing rate - y', 'mean crossing rate - z',
-                            'xy covariance', 'xz covariance', 'yz covariance'],
-            'author': ['CY', 'CY', 'CY',
-                        'CY', 'CY', 'CY',
-                        'CY', 'CY', 'CY'],
-            'value': [appended[i*4][0], appended[i*4][1], appended[i*4][2],
-                       appended[i*4+3][0], appended[i*4+3][1], appended[i*4+3][2],
-                       cov[i*3+0], cov[i*3+1], cov[i*3+2]],
-            'units': ['-', '-', '-',
-                      '-', '-', '-',
-                      '-', '-', '-'],
+            'author': ['CY'] * 5,
+            'trial': [i] * 5,
+            'metric_name': ['zcr', 'mcr', 'xy', 'xz', 'yz'],
+            'metric_description': ['zero crossing rate', 'mean crossing rate',
+                                   'xy covariance', 'xz covariance', 'yz covariance'],
+            'x': [appended[i*4][0], appended[i*4+3][0], cov[i*3+0], cov[i*3+1], cov[i*3+2]],
+            'y': [appended[i*4][1], appended[i*4+3][1], cov[i*3+0], cov[i*3+1], cov[i*3+2]],
+            'z': [appended[i*4][2], appended[i*4+3][2], cov[i*3+0], cov[i*3+1], cov[i*3+2]],
+            'resultant': ['-'] * 5,
+            'x_unit': ['-'] * 5,
+            'y_unit': ['-'] * 5,
+            'z_unit': ['-'] * 5,
+            'resultant_unit': ['-'] * 5
         })
         
         # append stats into dataframe if it is requested
-        info[i] = info[i].append(obj2[obj2['metric_name'].isin(columns)])
-        
-        # convert dataframe into json format
-        info[i] = eval(info[i].to_json(orient='records'))
+        info += eval(obj2[obj2['metric_name'].isin(columns)].to_json(orient='records'))
 
     return info
 
+def overall_main(json):
+    accel_output = main(json["accelerometer"]["filename_without_extension"], df=json["accel_df"], truncate=truncation.values, columns=cols)
+    gyro_output = main(json["gyroscope"]["filename_without_extension"], df=json["gyro_df"], truncate=truncation.values, columns=cols)
 
-def overall_main():
-    True
+    return accel_output + gyro_output
+    # main(json["gyroscope"]["filename_without_extension"], df=json["gyro_df"], truncate=truncation.values, columns=cols)
 
-cols = ['+ve actions_j', '+ve peak height_j', '+ve peak height_j std', '+ve peak width_j', '+ve peak width_j std','xy']
+
+cols = ['peak actions', 'peak height', 'peak height_j std', 'peak width_j', 'trough width_j std',
+        'zcr', 'mcr', 'xy', 'xz', 'yz']
 
 # info = main(filepath=input('Please Insert File Name (without .csv): '), truncate=truncation.values, columns=cols)
 # print(json.dumps(info, indent=4))

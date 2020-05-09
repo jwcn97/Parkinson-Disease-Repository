@@ -3,6 +3,10 @@
 # === Imports ===
 from flask import Flask, request, render_template
 import json
+import pandas as pd
+from io import StringIO
+from func_timeout import func_timeout as to
+from func_timeout.exceptions import FunctionTimedOut
 
 from mmr import MMRFile, MMRSession
 
@@ -41,8 +45,11 @@ def load_configurations():
 
     # Functions to be run to get metrics    
     app.config["FUNCTIONS"] = [
-        jwf.overall_main
+        ("Jing Wei's functions", jwf.overall_main)
     ]
+
+    # Timeout for each function
+    app.config["FUNCTION_TIMEOUT"] = 5 
 
 
 def load_parameters():
@@ -312,9 +319,11 @@ def group_files_into_sessions():
         if not file_added:
             sessions.append(
                 {
+                    "index": len(sessions) + 1,
                     "session": MMRSession(f),
                     "inputs": [],
-                    "validated": False
+                    "validated": False,
+                    "dataframe": None
                 }
             )
 
@@ -336,6 +345,10 @@ def filter_sessions_by_validity():
     global sessions 
 
     sessions = list(filter(lambda s: s["session"].valid_session == True, sessions))
+
+    # Reset index of sessions
+    for ix, s in enumerate(sessions): 
+        s["index"] = ix + 1
 
 
 def post_form(request):
@@ -379,15 +392,86 @@ def post_form(request):
             s["validated"] = True 
 
             # Generate dataframe
-            get_metrics()
+            results, errors = get_metrics(s['session'])
+
+            # Parse result
+            dataframe = pd.DataFrame(results)
+
+            # TODO What if there is no dataframe? 
+            # Set dataframe
+            if dataframe.empty:
+                s['has_dataframe'] = False 
+            else:
+                s["has_dataframe"] = True 
+                s["dataframe"] = dataframe 
+
+def get_metrics(session):
+    """
+    Gets the metrics dataframe for the current session
+    """
+    # Results
+    results = []
+    errors = []
+
+    for name, f in app.config["FUNCTIONS"]:
+        # Generate the JSON to be passed to each metric function call    
+        session_json = generate_session_json(session)
+        
+        # Function call
+        try:
+            r = to(app.config["FUNCTION_TIMEOUT"], f, args=(session_json, ))
+
+            results.extend(r)
+        except FunctionTimedOut:
+            # TODO
+            True
+            print("TIMEDOUT")
+
+            errors.append("Function timed out: " + str(name))
+        except:
+            # TODO
+            True 
+            print("EXCEPTION")
+
+            errors.append("Exception occurred: ", + str(name))
+        
+    return results, errors
 
 
-def get_metrics():
-    # TODO
-    True 
+def generate_session_json(session):
+    """
+    Generates a JSON to be passed to the metric functions.
+    """
+    # Load accelerometer and gyroscope dataframes
+    # Accelerometer dataframe
+    accelerometer_df = pd.read_csv(StringIO(session.sensor_modes["accelerometer"].contents))
 
-    for f in app.config["FUNCTIONS"]:
-        print(f)
+    # Gyroscope dataframe
+    gyroscope_df = pd.read_csv(StringIO(session.sensor_modes["gyroscope"].contents))
+
+    # Copy accelerometer and gyroscope dataframes to avoid overwriting
+    accel_df = accelerometer_df.copy()
+    gyro_df = gyroscope_df.copy()
+
+    return {
+            "filename": session.session_key,
+            "name": session.session_key, 
+            # The same as filename was previously the full name of the file
+            # However, it made little sense to represent 'sessions' by the name of the files of one of their sensor modes
+            "saved_name": session.session_name,
+            "metadata": session.session_metadata,
+            "accelerometer": {
+                "filename": session.sensor_modes["accelerometer"].filename,
+                "filename_without_extension": session.sensor_modes["accelerometer"].filename.rsplit('.', 1)[0]
+            },
+            "gyroscope": {
+                "filename": session.sensor_modes["gyroscope"].filename,
+                "filename_without_extension": session.sensor_modes["gyroscope"].filename.rsplit('.', 1)[0]
+            },
+            "accel_df": accel_df,
+            "gyro_df": gyro_df,
+            "version": session.firmware_version
+        }
 
 
 # === HTML ===
@@ -428,6 +512,12 @@ def html():
         html += '<hr>'
 
         html += generate_parameter_requests()
+
+    # Dataframes
+    if any([s["dataframe"] is not None for s in sessions]):
+        html += '<hr>'
+
+        html += generate_metric_dataframes()
 
     # Return
     return html
@@ -494,3 +584,17 @@ def extract_values_from_name():
             })
 
         s["inputs"] = session_input
+
+
+def generate_metric_dataframes():
+    """
+    Handles html HTML related to the dataframes.
+    """
+    html = ''
+
+    html = render_template(
+        "metric_df.html",
+        sessions=sessions,
+    )
+
+    return html
