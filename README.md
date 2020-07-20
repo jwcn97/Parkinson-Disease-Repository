@@ -1,17 +1,14 @@
-"# Parkinson-Disease-Repository" 
+# Parkinson-Disease-Repository
 
-- Data
-
-main.ipynb: main project code
-
-util.ipynb: handles and support functions
-
-_naming_conventions.txt: naming conventions for different motion tests
-
-patient002: patient data folder
-
-patient003: patient data folder
-
-README.md: readme file
-
-- Testground (contains some future works)
+main
+- data
+- data (archived)
+- images
+- notebooks
+	- signal processing
+	- feature analysis
+	- app
+- testground
+	- signal processing
+	- feature analysis
+	- app
