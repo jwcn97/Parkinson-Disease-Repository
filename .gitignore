@@ -1,0 +1,26 @@
+# Checkpoints/Caches
+**/.ipynb_checkpoints
+**/__pycache__
+
+# Data (Archived)
+/Data (Archived)
+
+# Copies of data not in 'Data'
+**/*.csv
+!Data/**
+!Testground/*Test 9*Ka Shing*/tests/*.csv
+
+# No 'Images' or pictures or GIFs
+/Images
+**/*.gif
+**/*.png
+**/*.jpg
+
+# No 'Notebooks'
+/Notebooks
+
+# Copies of Ken's resources
+Testground/*Chin Yang*/*Ken*/resources
+
+# Old web apps
+**/Test 9 - Ka Shing_Web Application (Old)
