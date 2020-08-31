@@ -48,3 +48,4 @@ This folder holds the list of code that the team has developed, whether failed, 
 5. Everything in `Notebooks` is ignored. 
 6. Copies of Ken's `resources` folder in Chin Yang's testgrounds are ignored.
 7. The old web app folder is ignored.
+8. The `Archives` folder is a locally stored folder of a copy of everything previously in the repository. 
