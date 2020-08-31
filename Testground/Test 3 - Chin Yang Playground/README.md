@@ -29,7 +29,7 @@ This file comprises of all the code used for analyses that has been done up to d
 
 #### **Importing Libraries**
 - [X] Implementation of itertool: combinations
-- [ ] Implementation of scipy.signal: find_peaks and peak prominences
+- [X] Implementation of scipy.signal: find_peaks and peak prominences #Peak prominence not used
 - [X] Fixed mpld3 to allow plugins and widgets to work for scatter plots and colorbars
 - [ ] Fixed tqdm to display running time of code
 
@@ -37,7 +37,7 @@ This file comprises of all the code used for analyses that has been done up to d
 - [X] Navigates successfully to different data folders or specific .csv files from current working directory
 
 #### **Configuration Testing**
-- [ ] Check that every data set has adhere to the nomenclature accurately
+- [X] Check that every data set has adhere to the nomenclature accurately
 
 #### **Orientation Testing**
 - [X] Comparison on results dominantly using linear acceleration, quaternion and euler angles.
@@ -60,34 +60,30 @@ This file comprises of all the code used for analyses that has been done up to d
     - [ ] Median 
     - [ ] Mode
 - [ ] Variability/Spread Measures
-    - [ ] Standard Deviation
+    - [X] Standard Deviation
     - [ ] Interquartile Range
-    - [ ] Covariance
-- [ ] Shape Measures # Have not looked into this
-- [ ] Positional Measures
-    - [ ] Percentile # Have not looked into this
-- [ ] Impurity Measures
-    - [ ] Entropy # Have not looked into this
+    - [X] Covariance
+
 #### _Inferential Statistics_
 - [X] Zero-crossing rate
 - [X] Mean-crossing rate # Find explanation on this
 - [X] Pearson's correlation coefficient
-- [ ] Spearman's correlation coefficient #for non-gaussian distribution
+- [ ] Spearman's correlation coefficient #not applicable
 
 #### _Exploratory Data Analysis_
 #Done by Jing
-- [ ] Count of dominant peaks and troughs 
-- [ ] Count of subsidiary peaks and troughs
-- [ ] Height and width of dominant peaks and troughs 
-- [ ] Height and width of subsidiary peaks and troughs
+- [X] Count of dominant peaks and troughs 
+- [X] Count of subsidiary peaks and troughs
+- [X] Height and width of dominant peaks and troughs 
+- [X] Height and width of subsidiary peaks and troughs
 
 #### **Frequency Spectrum**
 - [X] Fast Fourier Transform
-- [ ] Frequency Analysis
-    - [ ] Amplitude vs Frequency
-    - [ ] Energy Spectral Density vs Frequency
-    - [ ] Power vs Frequency
-    - [ ] Power Spectral Density vs Frequency
+- [X] Frequency Analysis
+    - [X] Amplitude vs Frequency
+    - [X] Energy Spectral Density vs Frequency
+    - [X] Power vs Frequency
+    - [X] Power Spectral Density vs Frequency
 
 #### **Frequency-domain Statistics**
 #### _Descriptive Statistics_
@@ -98,41 +94,38 @@ This file comprises of all the code used for analyses that has been done up to d
     - [ ] Mode
 - [ ] Variability Measures
     - [X] Standard Deviation
-    - [ ] Interquartile Range 
-- [ ] Shape Measures 
-    - [ ] Skewness
-    - [ ] Kurtosis 
-- [ ] Positional Measures
-    - [ ] Percentile
-- [ ] Impurity Measures
-    - [ ] Entropy #Have not looked into this
+    - [X] Interquartile Range 
+- [X] Shape Measures 
+    - [X] Skewness
+    - [X] Kurtosis 
+- [X] Positional Measures
+    - [X] Percentile
 
 #### _Exploratory Data Analysis_
-- [ ] Spectrogram. #A 3D measure the change in frequency along with its intensity with variation of time. Though, a mismatch in values with colorbar is still a concern here.
+- [X] Spectrogram. #A 3D measure on the change in frequency along with its intensity with variation of time. Though, a mismatch in values with colorbar is still a concern here.
 
 #### **Feature Selection**
 This section of the code will serve as evaluation purposes for all the statistics or indicators used for classification. The features will then be tentatively ranked according to the metric of evaluations.
 - [ ] Accuracy.  #The accuracy achieved will be representative of the uni-directional trend shown across severity levels.
     - [ ] Gini impurity # To be reconsidered. This is the measure for the misclassification data set, based on the features finalised for classification.
-- [ ] Distinguishability. #Measure the extent of significance of the feature, across severity levels. Metrics for this could be absolute difference or ratio.
-- [ ] Precision. #This will be use to measure the consistency of the features' accuracy and distinguishability, across data sets.
+- [X] Distinguishability. #Measure the extent of significance of the feature, across severity levels. Metrics for this could be absolute difference or ratio.
+- [X] Precision. #This will be use to measure the consistency of the features' accuracy and distinguishability, across data sets.
 
 #### **Smoothen Data**
-- [ ] Filter works. #Check with Ken
+- [ ] Filter works. 
 
 #### **Noise**
-- [ ] Background noise check for sensors. #Still need checks
-- [ ] 
+- [X] Background noise check for sensors.
+
 
 #### **Archive**
 - [ ] Notes prior for data pre-processing
-    - [ ] Error checks
-    - [ ] Identifying patterns and observations
-    - [ ] Insights for automatic truncation
+    - [X] Error checks
+    - [X] Identifying patterns and observations
+    - [X] Insights for automatic truncation
     - [ ] Additional notes for feature extraction
-- [ ] Manual truncation timestamps for new data sets
-- [ ] Cross check on 
-- [ ] Debugging issues in frequency domain
+- [X] Manual truncation timestamps for new data sets
+- [X] Debugging issues in frequency domain
 
 
 ### Insights on Experiment & Insights on Motion Tests
