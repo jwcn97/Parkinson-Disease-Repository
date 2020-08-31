@@ -1,7 +1,0 @@
-{% if notifications is defined %}
-    {% for i in notifications %}
-    <div>
-        <label style="color: {{ i["color"] }}">{{ i["tag"] }} </label>{{ i["message"] }}
-    </div>
-    {% endfor %}
-{% endif %}
