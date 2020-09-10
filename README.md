@@ -1,10 +1,10 @@
 # Feature Engineering for Detection of Parkinson Disease Severity with Motion Sensor Arrays
 
 This is the repository for the final year project undertaken by the following individuals: 
-1. Chan Jing Wei
-3. Joseph Piong Ken Yew
-2. Liong Ka Shing
-4. Tan Chin Yang
+1. [Chan Jing Wei](https://github.com/jwcn97)
+3. [Joseph Piong Ken Yew](https://github.com/KenYew)
+2. [Liong Ka Shing](https://github.com/KaShing96)
+4. [Tan Chin Yang](https://github.com/CYTan2209)
 
 This project aims to explore potential metrics for the quantification of Parkinson's Disease severity. These metrics are intended to ultimately be fed into a machine learning algorithm, which ideally predicts and assigns a severity level for the disease.
 
