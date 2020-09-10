@@ -27,7 +27,8 @@ This folder holds the list of code that the team has developed, whether failed, 
 7. Ka Shing_Inertial navigation `Discontinued`<br>An attempt to transform sensor data to the global reference frame. 
 8. Ka Shing_Data Analysis `Discontinued`<br>An attempt to run methodical data analysis on acquired data. Discontinued due to redistribution of task responsibilities. 
 9. Ka Shing_Web Application `Complete`<br>Proof-of-concept regarding a Create-Read-Update-Delete web app for acquired data.
-10. Ken Yew_Feature_Extraction<br>Feature extraction code. 
+10. Ken Yew_Feature_Extraction `Completed`<br>Feature extraction code. 
+11. Jing Wei_Pulse Analysis `Completed`<br>Analysis of motion pulses.
 
 ---
 
